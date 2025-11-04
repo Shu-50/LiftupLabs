@@ -16,13 +16,15 @@ const AboutSection = () => {
             </div>
 
             <p className="text-gray-700 text-lg mb-8 leading-relaxed">
-                A unified learning and events platform for students, institutions, and professionals in India
+               <H2>Shivaaradhya Foundation</H2> – United to Empower, Transform Lives, and Redefine Tomorrow
+
+Shivaaradhya Foundation is a visionary NGO committed to uplifting communities through education, welfare, and sustainability. Guided by compassion and innovation, we aim to bring educational awareness, inspire a purposeful way of living, and drive meaningful change in society.
             </p>
 
             <div className="mb-8">
                 <h2 className="text-xl font-semibold text-orange-900 mb-4">Our Mission</h2>
                 <p className="text-gray-700 leading-relaxed mb-6">
-                    Liftuplabs brings events, collaborative learning, and academic content together so learners can discover, participate, and grow in one place.
+                   To empower lives by providing quality education, essential resources, and sustainable solutions, while promoting awareness about the importance of education and teaching people how to live a fulfilling and meaningful life.
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
