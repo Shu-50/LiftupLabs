@@ -16,7 +16,9 @@ const AboutSection = () => {
             </div>
 
             <p className="text-gray-700 text-lg mb-8 leading-relaxed">
-                A unified learning and events platform for students, institutions, and professionals in India
+                <H2></H2>Shivaaradhya Foundation</H2> – United to Empower, Transform Lives, and Redefine Tomorrow
+
+Shivaaradhya Foundation is a visionary NGO committed to uplifting communities through education, welfare, and sustainability. Guided by compassion and innovation, we aim to bring educational awareness, inspire a purposeful way of living, and drive meaningful change in society.
             </p>
 
             <div className="mb-8">
