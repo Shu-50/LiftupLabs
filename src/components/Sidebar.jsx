@@ -1,20 +1,27 @@
 import { useState } from 'react'
+import { useAuth } from '../context/AuthContext'
 import GlobalSearch from './GlobalSearch'
 
 const Sidebar = ({ activeSection, setActiveSection }) => {
     const [searchQuery, setSearchQuery] = useState('')
+    const { user } = useAuth()
 
-    const menuItems = [
+    const baseMenuItems = [
         { id: 'home', label: 'Home', icon: '🏠' },
         { id: 'events', label: 'Events & Competitions', icon: '🎯' },
-        { id: 'my-events', label: 'My Events', icon: '�' },
+        { id: 'my-events', label: 'My Events', icon: '📅' },
         { id: 'notes', label: 'Notes & PYQs', icon: '📝' },
         { id: 'courses', label: 'Courses & Lectures', icon: '📚' },
         { id: 'institutions', label: 'Institutions & Hosts', icon: '🏛️' },
-        { id: 'community', label: 'Community', icon: '�' },
-        { id: 'career', label: 'Career & Guidance', icon: '�' },
+        { id: 'community', label: 'Community', icon: '👥' },
+        { id: 'career', label: 'Career & Guidance', icon: '💼' },
         { id: 'about', label: 'About / Contact', icon: '📞' }
     ]
+
+    // Add admin menu item if user is admin
+    const menuItems = user?.role === 'admin'
+        ? [...baseMenuItems, { id: 'admin', label: 'Admin Dashboard', icon: '⚙️' }]
+        : baseMenuItems
 
     return (
         <div className="w-64 bg-orange-100 border-r border-orange-200 flex flex-col">
@@ -66,8 +73,8 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
                             key={item.id}
                             onClick={() => setActiveSection(item.id)}
                             className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-colors ${activeSection === item.id
-                                ? 'bg-orange-200 text-orange-900 font-medium'
-                                : 'text-orange-700 hover:bg-orange-150'
+                                    ? 'bg-orange-200 text-orange-900 font-medium'
+                                    : 'text-orange-700 hover:bg-orange-150'
                                 }`}
                         >
                             <span>{item.icon}</span>

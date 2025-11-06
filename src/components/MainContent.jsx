@@ -3,10 +3,11 @@ import ContactForm from './ContactForm'
 import FAQ from './FAQ'
 import EventsSection from './EventsSection'
 import NotesSection from './NotesSection'
-import CareerHub from './CareerHub'
+import CareerHub from '../pages/CareerHub'
 import CoursesSection from './CoursesSection'
 import CommunitySection from './CommunitySection'
-import MyEventsDashboard from './MyEventsDashboard'
+import MyEventsDashboard from '../pages/MyEventsDashboard'
+import AdminDashboard from '../pages/AdminDashboard'
 
 const MainContent = ({ activeSection }) => {
     const renderContent = () => {
@@ -91,6 +92,8 @@ const MainContent = ({ activeSection }) => {
                 return <CommunitySection />
             case 'career':
                 return <CareerHub />
+            case 'admin':
+                return <AdminDashboard />
             case 'about':
                 return (
                     <div className="space-y-8">

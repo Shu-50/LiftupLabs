@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import apiService from '../services/api'
 
 const LoginPage = ({ onLogin, onSwitchToRegister }) => {
     const [formData, setFormData] = useState({
@@ -7,6 +9,7 @@ const LoginPage = ({ onLogin, onSwitchToRegister }) => {
         keepSignedIn: false
     })
     const [isLoading, setIsLoading] = useState(false)
+    const [showVerificationMessage, setShowVerificationMessage] = useState(false)
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target
@@ -20,19 +23,25 @@ const LoginPage = ({ onLogin, onSwitchToRegister }) => {
         e.preventDefault()
         setIsLoading(true)
 
-        // Simulate API call
-        setTimeout(() => {
-            // Mock successful login
-            const userData = {
-                id: 1,
-                name: 'John Doe',
+        try {
+            const result = await onLogin({
                 email: formData.email,
-                role: 'student',
-                avatar: '👨‍🎓'
+                password: formData.password
+            })
+
+            if (!result.success) {
+                if (result.requiresVerification) {
+                    setShowVerificationMessage(true)
+                } else {
+                    alert(result.error || 'Login failed')
+                }
             }
-            onLogin(userData)
+        } catch (error) {
+            console.error('Login error:', error)
+            alert('Login failed. Please try again.')
+        } finally {
             setIsLoading(false)
-        }, 1000)
+        }
     }
 
     const handleEmailOTP = () => {
@@ -41,6 +50,21 @@ const LoginPage = ({ onLogin, onSwitchToRegister }) => {
 
     const handleGitHub = () => {
         alert('GitHub OAuth would be implemented here')
+    }
+
+    const resendVerificationEmail = async () => {
+        try {
+            const data = await apiService.resendVerification(formData.email)
+
+            if (data.success) {
+                alert('Verification email sent! Please check your inbox.')
+            } else {
+                alert(data.message || 'Failed to send verification email')
+            }
+        } catch (error) {
+            console.error('Resend error:', error)
+            alert('Network error. Please try again.')
+        }
     }
 
     return (
@@ -152,6 +176,36 @@ const LoginPage = ({ onLogin, onSwitchToRegister }) => {
                                     </div>
 
                                     <form onSubmit={handleSubmit} className="space-y-4">
+                                        {showVerificationMessage && (
+                                            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                                                <div className="flex items-start space-x-3">
+                                                    <span className="text-yellow-500 text-xl">⚠️</span>
+                                                    <div className="flex-1">
+                                                        <h4 className="font-semibold text-yellow-800">Email Verification Required</h4>
+                                                        <p className="text-yellow-700 text-sm mt-1">
+                                                            Please verify your email address before logging in. Check your inbox for the verification email.
+                                                        </p>
+                                                        <div className="mt-3 space-x-2">
+                                                            <button
+                                                                type="button"
+                                                                onClick={resendVerificationEmail}
+                                                                className="text-yellow-800 hover:text-yellow-900 font-medium text-sm underline"
+                                                            >
+                                                                Resend Verification Email
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => setShowVerificationMessage(false)}
+                                                                className="text-yellow-600 hover:text-yellow-700 text-sm"
+                                                            >
+                                                                Dismiss
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
                                             <input
@@ -232,12 +286,12 @@ const LoginPage = ({ onLogin, onSwitchToRegister }) => {
 
                                     <div className="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg">
                                         <p className="text-gray-600 mb-4">New to Liftuplabs?</p>
-                                        <button
-                                            onClick={onSwitchToRegister}
-                                            className="bg-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-orange-700"
+                                        <Link
+                                            to="/register"
+                                            className="bg-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-orange-700 inline-block text-center"
                                         >
                                             Create Account
-                                        </button>
+                                        </Link>
                                     </div>
                                 </div>
                             </div>

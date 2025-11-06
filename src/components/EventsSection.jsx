@@ -1,357 +1,209 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useNotification } from '../context/NotificationContext'
+import apiService from '../services/api'
 import EventDetails from './EventDetails'
+import CreateEventForm from './CreateEventForm'
+import EventRegistrationForm from './EventRegistrationForm'
 
 const EventsSection = () => {
     const [selectedEvent, setSelectedEvent] = useState(null)
-    const [registeredEvents, setRegisteredEvents] = useState(new Set())
+    const [events, setEvents] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [registering, setRegistering] = useState(new Set())
+    const [showCreateForm, setShowCreateForm] = useState(false)
+    const [showRegistrationForm, setShowRegistrationForm] = useState(false)
+    const [eventToRegister, setEventToRegister] = useState(null)
     const { user } = useAuth()
     const { showSuccess, showError } = useNotification()
 
     // Filter states
     const [filters, setFilters] = useState({
-        category: 'All',
-        institution: '',
-        city: '',
-        date: '',
-        mode: '',
-        sort: 'Latest',
-        deadline: '',
-        price: '',
-        tags: []
+        // Only include non-empty values
+        sort: 'latest',
+        page: 1,
+        limit: 12
     })
 
-    const events = [
-        {
-            id: 1,
-            title: 'National AI Hackathon 2025',
-            organizer: 'IIT Delhi',
-            institution: 'IIT Delhi',
-            date: 'Jan 10-12, 2025',
-            dateObj: new Date('2025-01-10'),
-            location: 'Online',
-            city: 'Delhi',
-            type: 'Hackathon',
-            category: 'Hackathon',
-            participants: 2500,
-            prize: '₹1,00,000',
-            priceAmount: 100000,
-            fee: 'Free',
-            image: '🤖',
-            status: 'Open',
-            deadline: '12 Jan',
-            deadlineObj: new Date('2025-01-12'),
-            mode: 'Online',
-            tags: ['AI/ML', 'Web3', 'Open Source'],
-            teamSize: 'Team of 2-4',
-            skills: ['Python', 'Machine Learning', 'AI']
-        },
-        {
-            id: 2,
-            title: 'Technova 2025 Coding Challenge',
-            organizer: 'NIT Trichy',
-            institution: 'NIT Trichy',
-            date: '28 Dec, 2024',
-            dateObj: new Date('2024-12-28'),
-            location: 'NIT Trichy',
-            city: 'Trichy',
-            type: 'Tech Fest',
-            category: 'Tech Fest',
-            participants: 1800,
-            prize: '₹75,000',
-            priceAmount: 75000,
-            fee: '₹500',
-            image: '💻',
-            status: 'Open',
-            deadline: '25 Dec',
-            deadlineObj: new Date('2024-12-25'),
-            mode: 'Offline',
-            tags: ['DSA', 'Robotics'],
-            teamSize: 'Individual',
-            skills: ['C++', 'Algorithms', 'Problem Solving']
-        },
-        {
-            id: 3,
-            title: 'Data Science Workshop Series',
-            organizer: 'PES University',
-            institution: 'PES University',
-            date: '05 Jan, 2025',
-            dateObj: new Date('2025-01-05'),
-            location: 'Hybrid',
-            city: 'Bangalore',
-            type: 'Workshop',
-            category: 'Workshop',
-            participants: 300,
-            prize: 'Certificate',
-            priceAmount: 0,
-            fee: '₹1,200',
-            image: '📊',
-            status: 'Open',
-            deadline: '02 Jan',
-            deadlineObj: new Date('2025-01-02'),
-            mode: 'Hybrid',
-            tags: ['AI/ML', 'Python'],
-            teamSize: 'Individual',
-            skills: ['Python', 'Data Analysis', 'Statistics']
-        },
-        {
-            id: 4,
-            title: 'Startup Pitch Competition',
-            organizer: 'IIM Ahmedabad',
-            institution: 'IIM Ahmedabad',
-            date: '15 Jan, 2025',
-            dateObj: new Date('2025-01-15'),
-            location: 'IIM Ahmedabad',
-            city: 'Ahmedabad',
-            type: 'Seminar',
-            category: 'Seminar',
-            participants: 150,
-            prize: '₹2,00,000',
-            priceAmount: 200000,
-            fee: 'Free',
-            image: '💡',
-            status: 'Open',
-            deadline: '10 Jan',
-            deadlineObj: new Date('2025-01-10'),
-            mode: 'Offline',
-            tags: ['Business', 'Startup'],
-            teamSize: 'Team of 3-5',
-            skills: ['Business Strategy', 'Presentation', 'Innovation']
-        },
-        {
-            id: 5,
-            title: 'Web Development Quiz',
-            organizer: 'BITS Pilani',
-            institution: 'BITS Pilani',
-            date: '20 Dec, 2024',
-            dateObj: new Date('2024-12-20'),
-            location: 'Online',
-            city: 'Pilani',
-            type: 'Quiz',
-            category: 'Quiz',
-            participants: 800,
-            prize: '₹25,000',
-            priceAmount: 25000,
-            fee: 'Free',
-            image: '❓',
-            status: 'Open',
-            deadline: '18 Dec',
-            deadlineObj: new Date('2024-12-18'),
-            mode: 'Online',
-            tags: ['Web3', 'Open Source'],
-            teamSize: 'Individual',
-            skills: ['HTML', 'CSS', 'JavaScript', 'React']
+    // Fetch events from API
+    const fetchEvents = async () => {
+        try {
+            setLoading(true)
+            const response = await apiService.getEvents(filters)
+            setEvents(response.data.events || [])
+        } catch (error) {
+            console.error('Error fetching events:', error)
+            showError('Failed to load events')
+            setEvents([])
+        } finally {
+            setLoading(false)
         }
-    ]
-
-    // Filter options
-    const categories = ['All', 'Hackathon', 'Quiz', 'Workshop', 'Seminar', 'Tech Fest']
-    const institutions = ['All', ...new Set(events.map(e => e.institution))]
-    const cities = ['All', ...new Set(events.map(e => e.city))]
-    const modes = ['All', 'Online', 'Offline', 'Hybrid']
-    const sortOptions = ['Latest', 'Oldest', 'Prize Amount', 'Deadline', 'Participants']
-    const deadlineOptions = ['All', 'This Week', 'This Month', 'Next Month']
-    const priceOptions = ['All', 'Free', '₹500+', '₹1000+', '₹50k+']
-    const trendingTags = ['AI/ML', 'Web3', 'Robotics', 'Open Source', 'DSA', 'Python', 'Business', 'Startup']
-
-    // Hosts data
-    const nearbyHosts = [
-        {
-            id: 1,
-            name: 'IIT Madras',
-            location: 'Chennai',
-            events: 12,
-            avatar: '🏛️',
-            verified: true
-        },
-        {
-            id: 2,
-            name: 'Startup India',
-            location: 'Online',
-            events: 8,
-            avatar: '🚀',
-            verified: true
-        }
-    ]
-
-    // Apply filters
-    const getFilteredEvents = () => {
-        let filtered = [...events]
-
-        // Category filter
-        if (filters.category !== 'All') {
-            filtered = filtered.filter(event => event.category === filters.category)
-        }
-
-        // Institution filter
-        if (filters.institution && filters.institution !== 'All') {
-            filtered = filtered.filter(event => event.institution === filters.institution)
-        }
-
-        // City filter
-        if (filters.city && filters.city !== 'All') {
-            filtered = filtered.filter(event => event.city === filters.city)
-        }
-
-        // Mode filter
-        if (filters.mode && filters.mode !== 'All') {
-            filtered = filtered.filter(event => event.mode === filters.mode)
-        }
-
-        // Deadline filter
-        if (filters.deadline && filters.deadline !== 'All') {
-            const now = new Date()
-            const oneWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000)
-            const oneMonth = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000)
-
-            switch (filters.deadline) {
-                case 'This Week':
-                    filtered = filtered.filter(event => event.deadlineObj <= oneWeek)
-                    break
-                case 'This Month':
-                    filtered = filtered.filter(event => event.deadlineObj <= oneMonth)
-                    break
-                case 'Next Month':
-                    filtered = filtered.filter(event => event.deadlineObj > oneMonth)
-                    break
-            }
-        }
-
-        // Price filter
-        if (filters.price && filters.price !== 'All') {
-            switch (filters.price) {
-                case 'Free':
-                    filtered = filtered.filter(event => event.fee === 'Free')
-                    break
-                case '₹500+':
-                    filtered = filtered.filter(event => event.priceAmount >= 500)
-                    break
-                case '₹1000+':
-                    filtered = filtered.filter(event => event.priceAmount >= 1000)
-                    break
-                case '₹50k+':
-                    filtered = filtered.filter(event => event.priceAmount >= 50000)
-                    break
-            }
-        }
-
-        // Tags filter
-        if (filters.tags.length > 0) {
-            filtered = filtered.filter(event =>
-                filters.tags.some(tag => event.tags.includes(tag))
-            )
-        }
-
-        // Sort
-        switch (filters.sort) {
-            case 'Latest':
-                filtered.sort((a, b) => b.dateObj - a.dateObj)
-                break
-            case 'Oldest':
-                filtered.sort((a, b) => a.dateObj - b.dateObj)
-                break
-            case 'Prize Amount':
-                filtered.sort((a, b) => b.priceAmount - a.priceAmount)
-                break
-            case 'Deadline':
-                filtered.sort((a, b) => a.deadlineObj - b.deadlineObj)
-                break
-            case 'Participants':
-                filtered.sort((a, b) => b.participants - a.participants)
-                break
-        }
-
-        return filtered
     }
 
-    const filteredEvents = getFilteredEvents()
+    // Load events on component mount and filter changes
+    useEffect(() => {
+        fetchEvents()
+    }, [filters])
+
+    // Handle event registration
+    const handleEventRegistration = async (eventId, isCurrentlyRegistered) => {
+        if (!user) {
+            showError('Please login to register for events')
+            return
+        }
+
+        if (isCurrentlyRegistered) {
+            // Handle unregistration
+            if (registering.has(eventId)) return // Prevent double-clicking
+
+            try {
+                setRegistering(prev => new Set(prev).add(eventId))
+                await apiService.unregisterFromEvent(eventId)
+                showSuccess('Successfully unregistered from event')
+                await fetchEvents()
+            } catch (error) {
+                console.error('Unregistration error:', error)
+                showError(error.message || 'Unregistration failed')
+            } finally {
+                setRegistering(prev => {
+                    const newSet = new Set(prev)
+                    newSet.delete(eventId)
+                    return newSet
+                })
+            }
+        } else {
+            // Show registration form for new registration
+            const event = events.find(e => e._id === eventId)
+            setEventToRegister(event)
+            setShowRegistrationForm(true)
+        }
+    }
+
+    const handleRegistrationSuccess = () => {
+        fetchEvents() // Refresh events to get updated registration status
+        setShowRegistrationForm(false)
+        setEventToRegister(null)
+    }
 
     const updateFilter = (key, value) => {
-        setFilters(prev => ({ ...prev, [key]: value }))
-    }
+        setFilters(prev => {
+            const newFilters = { ...prev, page: 1 };
 
-    const toggleTag = (tag) => {
-        setFilters(prev => ({
-            ...prev,
-            tags: prev.tags.includes(tag)
-                ? prev.tags.filter(t => t !== tag)
-                : [...prev.tags, tag]
-        }))
+            // Only add the filter if it has a meaningful value
+            if (value && value !== '' && value !== 'all') {
+                newFilters[key] = value;
+            } else {
+                // Remove the filter if it's empty
+                delete newFilters[key];
+            }
+
+            return newFilters;
+        });
     }
 
     const clearFilters = () => {
         setFilters({
-            category: 'All',
-            institution: '',
-            city: '',
-            date: '',
-            mode: '',
-            sort: 'Latest',
-            deadline: '',
-            price: '',
-            tags: []
+            sort: 'latest',
+            page: 1,
+            limit: 12
         })
     }
 
-    const EventCard = ({ event }) => (
-        <div className="bg-white border border-orange-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
-            <div className="aspect-video bg-gradient-to-r from-orange-400 to-orange-600 flex items-center justify-center">
-                <span className="text-4xl">{event.image}</span>
-            </div>
+    // Format date for display
+    const formatDate = (dateString) => {
+        const date = new Date(dateString)
+        return date.toLocaleDateString('en-IN', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric'
+        })
+    }
 
-            <div className="p-6">
-                <div className="flex items-start justify-between mb-3">
-                    <div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-1">{event.title}</h3>
-                        <p className="text-orange-600 text-sm">By {event.organizer} • Deadline: {event.deadline} • Reward: {event.prize}</p>
+    // Format prize amount
+    const formatPrize = (prizes) => {
+        if (!prizes || prizes.length === 0) return 'Certificate'
+        const topPrize = prizes[0]
+        if (topPrize.amount > 0) {
+            return `₹${topPrize.amount.toLocaleString()}`
+        }
+        return topPrize.description || 'Certificate'
+    }
+
+    const EventCard = ({ event }) => {
+        const isRegistered = event.isUserRegistered || false
+        const isRegistering = registering.has(event._id)
+
+        return (
+            <div className="bg-white border border-orange-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+                <div className="aspect-video bg-gradient-to-r from-orange-400 to-orange-600 flex items-center justify-center">
+                    <span className="text-4xl">
+                        {event.category === 'hackathon' ? '🤖' :
+                            event.category === 'workshop' ? '📚' :
+                                event.category === 'quiz' ? '❓' :
+                                    event.category === 'seminar' ? '💡' : '🎯'}
+                    </span>
+                </div>
+
+                <div className="p-6">
+                    <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                            <h3 className="text-lg font-semibold text-gray-900 mb-1 line-clamp-2">
+                                {event.title}
+                            </h3>
+                            <p className="text-orange-600 text-sm mb-2">
+                                By {event.organizer?.name || 'Unknown'} •
+                                Deadline: {formatDate(event.registration?.deadline)} •
+                                Reward: {formatPrize(event.prizes)}
+                            </p>
+                            <p className="text-gray-600 text-sm">
+                                📅 {formatDate(event.dateTime?.start)} •
+                                📍 {event.location?.city || event.location?.venue || 'TBD'}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2 mb-4">
+                        <span className="px-2 py-1 bg-orange-100 text-orange-700 text-xs rounded capitalize">
+                            {event.category}
+                        </span>
+                        <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">
+                            {event.mode}
+                        </span>
+                        <span className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded">
+                            {event.registration?.teamSize?.max > 1 ?
+                                `Team of ${event.registration.teamSize.min}-${event.registration.teamSize.max}` :
+                                'Individual'
+                            }
+                        </span>
+                        {event.registration?.fee?.isFree && (
+                            <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded">
+                                Free
+                            </span>
+                        )}
+                    </div>
+
+                    <div className="flex space-x-3">
+                        <button
+                            onClick={() => setSelectedEvent(event._id)}
+                            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm hover:bg-gray-50"
+                        >
+                            View Details
+                        </button>
+                        <button
+                            onClick={() => handleEventRegistration(event._id, isRegistered)}
+                            disabled={isRegistering}
+                            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 ${isRegistered
+                                ? 'bg-green-600 text-white hover:bg-green-700'
+                                : 'bg-orange-600 text-white hover:bg-orange-700'
+                                }`}
+                        >
+                            {isRegistering ? '...' : isRegistered ? '✓ Registered' : 'Register'}
+                        </button>
                     </div>
                 </div>
-
-                <div className="flex flex-wrap gap-2 mb-4">
-                    <span className="px-2 py-1 bg-orange-100 text-orange-700 text-xs rounded">
-                        {event.category}
-                    </span>
-                    <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">
-                        {event.mode}
-                    </span>
-                    <span className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded">
-                        {event.teamSize}
-                    </span>
-                </div>
-
-                <div className="flex space-x-3">
-                    <button
-                        onClick={() => setSelectedEvent(event.id)}
-                        className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm hover:bg-gray-50"
-                    >
-                        View Details
-                    </button>
-                    <button
-                        onClick={() => {
-                            if (registeredEvents.has(event.id)) {
-                                setRegisteredEvents(prev => {
-                                    const newSet = new Set(prev)
-                                    newSet.delete(event.id)
-                                    return newSet
-                                })
-                                showSuccess(`Unregistered from ${event.title}`)
-                            } else {
-                                setRegisteredEvents(prev => new Set(prev).add(event.id))
-                                showSuccess(`Successfully registered for ${event.title}!`)
-                            }
-                        }}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${registeredEvents.has(event.id)
-                            ? 'bg-green-600 text-white hover:bg-green-700'
-                            : 'bg-orange-600 text-white hover:bg-orange-700'
-                            }`}
-                    >
-                        {registeredEvents.has(event.id) ? '✓ Registered' : 'Register'}
-                    </button>
-                </div>
             </div>
-        </div>
-    )
+        )
+    }
 
     // If an event is selected, show the event details
     if (selectedEvent) {
@@ -372,7 +224,16 @@ const EventsSection = () => {
                         <h1 className="text-3xl font-bold text-orange-900 mb-2">Browse Events</h1>
                         <p className="text-gray-700">Discover and participate in exciting events and competitions</p>
                     </div>
-                    <button className="bg-orange-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-orange-700">
+                    <button
+                        onClick={() => {
+                            if (!user) {
+                                showError('Please login to host events')
+                                return
+                            }
+                            setShowCreateForm(true)
+                        }}
+                        className="bg-orange-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-orange-700"
+                    >
                         🎯 Host Event
                     </button>
                 </div>
@@ -380,68 +241,54 @@ const EventsSection = () => {
 
             {/* Filters */}
             <div className="bg-white rounded-lg p-6 border border-orange-200">
-                {/* Category Filters */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                    {categories.map((category) => (
-                        <button
-                            key={category}
-                            onClick={() => updateFilter('category', category)}
-                            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${filters.category === category
-                                ? 'bg-orange-600 text-white'
-                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                }`}
-                        >
-                            🏷️ Category: {category}
-                        </button>
-                    ))}
+                {/* Search */}
+                <div className="mb-4">
+                    <input
+                        type="text"
+                        placeholder="Search events..."
+                        value={filters.search || ''}
+                        onChange={(e) => updateFilter('search', e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300"
+                    />
                 </div>
 
-                {/* Advanced Filters */}
+                {/* Filter Controls */}
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-4">
-                    {/* Institution */}
+                    {/* Category */}
                     <select
-                        value={filters.institution}
-                        onChange={(e) => updateFilter('institution', e.target.value)}
+                        value={filters.category || ''}
+                        onChange={(e) => updateFilter('category', e.target.value)}
                         className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-300"
                     >
-                        <option value="">🏛️ Institution</option>
-                        {institutions.map(inst => (
-                            <option key={inst} value={inst}>{inst}</option>
-                        ))}
+                        <option value="">All Categories</option>
+                        <option value="hackathon">Hackathon</option>
+                        <option value="workshop">Workshop</option>
+                        <option value="quiz">Quiz</option>
+                        <option value="seminar">Seminar</option>
+                        <option value="tech-fest">Tech Fest</option>
+                        <option value="competition">Competition</option>
                     </select>
-
-                    {/* City */}
-                    <select
-                        value={filters.city}
-                        onChange={(e) => updateFilter('city', e.target.value)}
-                        className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-300"
-                    >
-                        <option value="">📍 City</option>
-                        {cities.map(city => (
-                            <option key={city} value={city}>{city}</option>
-                        ))}
-                    </select>
-
-                    {/* Date */}
-                    <input
-                        type="date"
-                        value={filters.date}
-                        onChange={(e) => updateFilter('date', e.target.value)}
-                        className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-300"
-                        placeholder="📅 Date"
-                    />
 
                     {/* Mode */}
                     <select
-                        value={filters.mode}
+                        value={filters.mode || ''}
                         onChange={(e) => updateFilter('mode', e.target.value)}
                         className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-300"
                     >
-                        <option value="">🌐 Mode: Online/Offline</option>
-                        {modes.map(mode => (
-                            <option key={mode} value={mode}>{mode}</option>
-                        ))}
+                        <option value="">All Modes</option>
+                        <option value="Online">Online</option>
+                        <option value="Offline">Offline</option>
+                        <option value="Hybrid">Hybrid</option>
                     </select>
+
+                    {/* City */}
+                    <input
+                        type="text"
+                        placeholder="City"
+                        value={filters.city || ''}
+                        onChange={(e) => updateFilter('city', e.target.value)}
+                        className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-300"
+                    />
 
                     {/* Sort */}
                     <select
@@ -449,10 +296,11 @@ const EventsSection = () => {
                         onChange={(e) => updateFilter('sort', e.target.value)}
                         className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-300"
                     >
-                        <option value="">🔄 Sort: Latest</option>
-                        {sortOptions.map(sort => (
-                            <option key={sort} value={sort}>{sort}</option>
-                        ))}
+                        <option value="latest">Latest</option>
+                        <option value="oldest">Oldest</option>
+                        <option value="prize">Prize Amount</option>
+                        <option value="deadline">Deadline</option>
+                        <option value="participants">Participants</option>
                     </select>
 
                     {/* Clear Filters */}
@@ -460,134 +308,91 @@ const EventsSection = () => {
                         onClick={clearFilters}
                         className="px-3 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm hover:bg-gray-50"
                     >
-                        🗑️ Clear
-                    </button>
-                </div>
-
-                {/* Additional Filters Row */}
-                <div className="flex flex-wrap gap-4 mb-4">
-                    {/* Deadline */}
-                    <select
-                        value={filters.deadline}
-                        onChange={(e) => updateFilter('deadline', e.target.value)}
-                        className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-300"
-                    >
-                        <option value="">Deadline: This Month</option>
-                        {deadlineOptions.map(deadline => (
-                            <option key={deadline} value={deadline}>{deadline}</option>
-                        ))}
-                    </select>
-
-                    {/* Price */}
-                    <select
-                        value={filters.price}
-                        onChange={(e) => updateFilter('price', e.target.value)}
-                        className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-300"
-                    >
-                        <option value="">Prize: ₹50k+</option>
-                        {priceOptions.map(price => (
-                            <option key={price} value={price}>{price}</option>
-                        ))}
-                    </select>
-
-                    <button className="px-3 py-2 bg-blue-100 text-blue-700 rounded-lg text-sm">
-                        Online
+                        Clear All
                     </button>
                 </div>
             </div>
 
-            {/* Main Content */}
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                {/* Events List */}
-                <div className="lg:col-span-3">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {filteredEvents.map((event) => (
-                            <EventCard key={event.id} event={event} />
+            {/* Events Count */}
+            {!loading && (
+                <div className="mb-4">
+                    <p className="text-sm text-gray-600">
+                        Found {events.length} event(s)
+                        {Object.values(filters).some(v => v && v !== 'latest') && ' matching your filters'}
+                    </p>
+                </div>
+            )}
+
+            {/* Events Grid */}
+            <div>
+                {loading ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {[...Array(6)].map((_, i) => (
+                            <div key={i} className="bg-white border border-orange-200 rounded-lg p-6 animate-pulse">
+                                <div className="aspect-video bg-gray-200 rounded mb-4"></div>
+                                <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                                <div className="h-3 bg-gray-200 rounded mb-4"></div>
+                                <div className="flex space-x-2 mb-4">
+                                    <div className="h-6 w-16 bg-gray-200 rounded"></div>
+                                    <div className="h-6 w-16 bg-gray-200 rounded"></div>
+                                </div>
+                                <div className="flex space-x-3">
+                                    <div className="h-8 flex-1 bg-gray-200 rounded"></div>
+                                    <div className="h-8 w-20 bg-gray-200 rounded"></div>
+                                </div>
+                            </div>
                         ))}
                     </div>
-
-                    {filteredEvents.length === 0 && (
-                        <div className="text-center py-12 bg-white rounded-lg border border-orange-200">
-                            <div className="text-6xl mb-4">🔍</div>
-                            <h3 className="text-xl font-semibold text-gray-900 mb-2">No events found</h3>
-                            <p className="text-gray-600 mb-4">Try adjusting your filters to see more events</p>
+                ) : events.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {events.map((event) => (
+                            <EventCard key={event._id} event={event} />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="text-center py-12 bg-white rounded-lg border border-orange-200">
+                        <div className="text-6xl mb-4">🔍</div>
+                        <h3 className="text-xl font-semibold text-gray-900 mb-2">No events found</h3>
+                        <p className="text-gray-600 mb-4">
+                            {Object.values(filters).some(v => v && v !== 'latest')
+                                ? 'Try adjusting your filters to see more events'
+                                : 'No events are currently available'
+                            }
+                        </p>
+                        {Object.values(filters).some(v => v && v !== 'latest') && (
                             <button
                                 onClick={clearFilters}
                                 className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700"
                             >
                                 Clear Filters
                             </button>
-                        </div>
-                    )}
-                </div>
-
-                {/* Sidebar */}
-                <div className="space-y-6">
-                    {/* Quick Sort */}
-                    <div className="bg-white rounded-lg p-6 border border-orange-200">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Sort</h3>
-                        <div className="space-y-2">
-                            {sortOptions.map((sort) => (
-                                <button
-                                    key={sort}
-                                    onClick={() => updateFilter('sort', sort)}
-                                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${filters.sort === sort
-                                        ? 'bg-orange-100 text-orange-700'
-                                        : 'text-gray-700 hover:bg-gray-50'
-                                        }`}
-                                >
-                                    {sort}
-                                </button>
-                            ))}
-                        </div>
+                        )}
                     </div>
-
-                    {/* Trending Tags */}
-                    <div className="bg-white rounded-lg p-6 border border-orange-200">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Trending Tags</h3>
-                        <div className="flex flex-wrap gap-2">
-                            {trendingTags.map((tag) => (
-                                <button
-                                    key={tag}
-                                    onClick={() => toggleTag(tag)}
-                                    className={`px-3 py-1 rounded-full text-sm transition-colors ${filters.tags.includes(tag)
-                                        ? 'bg-orange-600 text-white'
-                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                        }`}
-                                >
-                                    {tag}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Hosts Near You */}
-                    <div className="bg-white rounded-lg p-6 border border-orange-200">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Hosts Near You</h3>
-                        <div className="space-y-4">
-                            {nearbyHosts.map((host) => (
-                                <div key={host.id} className="flex items-center justify-between">
-                                    <div className="flex items-center space-x-3">
-                                        <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
-                                            <span>{host.avatar}</span>
-                                        </div>
-                                        <div>
-                                            <div className="font-medium text-gray-900 flex items-center space-x-1">
-                                                <span>{host.name}</span>
-                                                {host.verified && <span className="text-green-600">✓</span>}
-                                            </div>
-                                            <div className="text-sm text-gray-600">{host.location} • {host.events} events</div>
-                                        </div>
-                                    </div>
-                                    <button className="text-orange-600 text-sm font-medium hover:text-orange-700">
-                                        Follow
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
+                )}
             </div>
+
+            {/* Create Event Form Modal */}
+            {showCreateForm && (
+                <CreateEventForm
+                    onClose={() => setShowCreateForm(false)}
+                    onEventCreated={() => {
+                        fetchEvents() // Refresh events list
+                        setShowCreateForm(false)
+                    }}
+                />
+            )}
+
+            {/* Event Registration Form Modal */}
+            {showRegistrationForm && eventToRegister && (
+                <EventRegistrationForm
+                    event={eventToRegister}
+                    onClose={() => {
+                        setShowRegistrationForm(false)
+                        setEventToRegister(null)
+                    }}
+                    onRegistrationSuccess={handleRegistrationSuccess}
+                />
+            )}
         </div>
     )
 }

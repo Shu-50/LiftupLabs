@@ -1,378 +1,515 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useAuth } from '../context/AuthContext'
+import { useNotification } from '../context/NotificationContext'
+import apiService from '../services/api'
+import EventRegistrationForm from './EventRegistrationForm'
 
 const EventDetails = ({ eventId, onBack }) => {
+    const [event, setEvent] = useState(null)
+    const [loading, setLoading] = useState(true)
     const [isRegistered, setIsRegistered] = useState(false)
+    const [showRegistrationForm, setShowRegistrationForm] = useState(false)
+    const { user } = useAuth()
+    const { showSuccess, showError } = useNotification()
 
-    // Event data - in real app this would come from API based on eventId
-    const eventsData = {
-        1: {
-            id: 1,
-            title: 'National AI Hackathon 2025',
-            organizer: 'IIT Delhi',
-            date: 'Jan 10 - Jan 12',
-            location: 'Online',
-            prize: '₹1,00,000',
-            description: 'Compete to build impactful AI solutions for education and healthcare. Open to all Indian students and professionals. Teams of up to 4 members.',
-            rules: [
-                'Indian residents; age 16+',
-                'Original submissions only',
-                'Team size 1-4; student ID required for student track'
-            ],
-            timeline: [
-                { event: 'Registration closes', date: '08 Jan' },
-                { event: 'Hackathon', date: '10-12 Jan' },
-                { event: 'Submission review', date: '13-17 Jan' },
-                { event: 'Winners announced', date: '20 Jan' }
-            ],
-            prizes: [
-                { position: 'Winner', amount: '₹1,00,000' },
-                { position: 'Runner-up', amount: '₹50,000' },
-                { position: 'Top 10', reward: 'Internship interviews' }
-            ],
-            organizer_info: {
-                name: 'IIT Delhi Innovation Cell',
-                status: 'Verified Host',
-                events: '24 events',
-                avatar: '👩‍💼'
-            },
-            faqs: [
-                { question: 'Is there any fee?', answer: 'No, free to participate.' },
-                { question: 'Can professionals join?', answer: 'Yes, in open track.' },
-                { question: 'Will certificates be provided?', answer: 'Yes, for all participants.' }
-            ]
-        },
-        2: {
-            id: 2,
-            title: 'Technova 2025 Coding Challenge',
-            organizer: 'NIT Trichy',
-            date: '28 Dec, 2024',
-            location: 'NIT Trichy',
-            prize: '₹75,000',
-            description: 'Join the ultimate coding challenge at Technova 2025. Test your programming skills against the best coders from across India. Individual participation with exciting prizes.',
-            rules: [
-                'Individual participation only',
-                'Valid college ID required',
-                'Programming languages: C++, Java, Python allowed'
-            ],
-            timeline: [
-                { event: 'Registration closes', date: '25 Dec' },
-                { event: 'Coding Challenge', date: '28 Dec' },
-                { event: 'Results announced', date: '30 Dec' }
-            ],
-            prizes: [
-                { position: 'Winner', amount: '₹75,000' },
-                { position: 'Runner-up', amount: '₹40,000' },
-                { position: 'Third Place', amount: '₹25,000' }
-            ],
-            organizer_info: {
-                name: 'NIT Trichy Tech Fest',
-                status: 'Verified Host',
-                events: '18 events',
-                avatar: '🏛️'
-            },
-            faqs: [
-                { question: 'What is the registration fee?', answer: '₹500 per participant.' },
-                { question: 'Can I use external libraries?', answer: 'Only standard libraries allowed.' },
-                { question: 'Duration of the contest?', answer: '4 hours coding challenge.' }
-            ]
-        },
-        3: {
-            id: 3,
-            title: 'Data Science Workshop Series',
-            organizer: 'PES University',
-            date: '05 Jan, 2025',
-            location: 'Hybrid',
-            prize: 'Certificate',
-            description: 'Comprehensive workshop series on Data Science fundamentals. Learn Python, data analysis, machine learning, and visualization techniques from industry experts.',
-            rules: [
-                'Basic Python knowledge required',
-                'Laptop with Python installed',
-                'Individual participation'
-            ],
-            timeline: [
-                { event: 'Registration closes', date: '02 Jan' },
-                { event: 'Workshop Day 1', date: '05 Jan' },
-                { event: 'Workshop Day 2', date: '06 Jan' },
-                { event: 'Certificate distribution', date: '07 Jan' }
-            ],
-            prizes: [
-                { position: 'All Participants', reward: 'Certificate of Completion' },
-                { position: 'Best Project', amount: '₹10,000' }
-            ],
-            organizer_info: {
-                name: 'PES University Data Science Club',
-                status: 'Verified Host',
-                events: '12 events',
-                avatar: '📊'
-            },
-            faqs: [
-                { question: 'Is there a fee?', answer: '₹1,200 for the complete workshop series.' },
-                { question: 'Will materials be provided?', answer: 'Yes, all datasets and code will be shared.' },
-                { question: 'Can beginners attend?', answer: 'Yes, but basic Python knowledge is recommended.' }
-            ]
-        },
-        4: {
-            id: 4,
-            title: 'Startup Pitch Competition',
-            organizer: 'IIM Ahmedabad',
-            date: '15 Jan, 2025',
-            location: 'IIM Ahmedabad',
-            prize: '₹2,00,000',
-            description: 'Present your startup idea to industry experts and investors. Win funding, mentorship, and networking opportunities. Teams of 3-5 members required.',
-            rules: [
-                'Team size 3-5 members',
-                'Original business idea required',
-                'Pitch duration: 10 minutes + 5 minutes Q&A'
-            ],
-            timeline: [
-                { event: 'Registration closes', date: '10 Jan' },
-                { event: 'Pitch presentations', date: '15 Jan' },
-                { event: 'Investor networking', date: '15 Jan' },
-                { event: 'Results announced', date: '16 Jan' }
-            ],
-            prizes: [
-                { position: 'Winner', amount: '₹2,00,000' },
-                { position: 'Runner-up', amount: '₹1,00,000' },
-                { position: 'Third Place', amount: '₹50,000' },
-                { position: 'Best Innovation', reward: 'Mentorship Program' }
-            ],
-            organizer_info: {
-                name: 'IIM Ahmedabad Entrepreneurship Cell',
-                status: 'Verified Host',
-                events: '15 events',
-                avatar: '💼'
-            },
-            faqs: [
-                { question: 'Is there an entry fee?', answer: 'No, participation is free.' },
-                { question: 'Can students participate?', answer: 'Yes, students and professionals both welcome.' },
-                { question: 'What should the pitch include?', answer: 'Problem, solution, market, business model, and team.' }
-            ]
-        },
-        5: {
-            id: 5,
-            title: 'Web Development Quiz',
-            organizer: 'BITS Pilani',
-            date: '20 Dec, 2024',
-            location: 'Online',
-            prize: '₹25,000',
-            description: 'Test your web development knowledge in this comprehensive online quiz covering HTML, CSS, JavaScript, React, and modern web technologies.',
-            rules: [
-                'Individual participation only',
-                'Duration: 2 hours',
-                'Multiple choice and coding questions'
-            ],
-            timeline: [
-                { event: 'Registration closes', date: '18 Dec' },
-                { event: 'Quiz starts', date: '20 Dec 10:00 AM' },
-                { event: 'Quiz ends', date: '20 Dec 12:00 PM' },
-                { event: 'Results announced', date: '21 Dec' }
-            ],
-            prizes: [
-                { position: 'Winner', amount: '₹25,000' },
-                { position: 'Runner-up', amount: '₹15,000' },
-                { position: 'Third Place', amount: '₹10,000' }
-            ],
-            organizer_info: {
-                name: 'BITS Pilani Web Development Club',
-                status: 'Verified Host',
-                events: '20 events',
-                avatar: '💻'
-            },
-            faqs: [
-                { question: 'Is it free to participate?', answer: 'Yes, completely free.' },
-                { question: 'What topics are covered?', answer: 'HTML, CSS, JavaScript, React, Node.js, and web security.' },
-                { question: 'Can I use external resources?', answer: 'No, it\'s a closed-book quiz.' }
-            ]
+    // Fetch event details
+    useEffect(() => {
+        const fetchEvent = async () => {
+            try {
+                setLoading(true)
+                const response = await apiService.getEvent(eventId)
+                setEvent(response.data.event)
+                setIsRegistered(response.data.isUserRegistered || false)
+            } catch (error) {
+                console.error('Error fetching event:', error)
+                showError('Failed to load event details')
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        if (eventId) {
+            fetchEvent()
+        }
+    }, [eventId])
+
+    // Handle registration
+    const handleRegistration = async () => {
+        if (!user) {
+            showError('Please login to register for events')
+            return
+        }
+
+        if (isRegistered) {
+            // Handle unregistration
+            try {
+                await apiService.unregisterFromEvent(eventId)
+                setIsRegistered(false)
+                showSuccess('Successfully unregistered from event')
+                // Refresh event details
+                const response = await apiService.getEvent(eventId)
+                setEvent(response.data.event)
+            } catch (error) {
+                console.error('Unregistration error:', error)
+                showError(error.message || 'Unregistration failed')
+            }
+        } else {
+            // Show registration form
+            setShowRegistrationForm(true)
         }
     }
 
-    const event = eventsData[eventId] || eventsData[1] // Fallback to first event if ID not found
-
-    const handleRegister = () => {
-        setIsRegistered(!isRegistered)
+    const handleRegistrationSuccess = () => {
+        setIsRegistered(true)
+        setShowRegistrationForm(false)
+        // Refresh event details
+        const fetchEvent = async () => {
+            try {
+                const response = await apiService.getEvent(eventId)
+                setEvent(response.data.event)
+            } catch (error) {
+                console.error('Error refreshing event:', error)
+            }
+        }
+        fetchEvent()
     }
 
-    return (
-        <div className="max-w-4xl mx-auto space-y-6">
-            {/* Back Button */}
-            <button
-                onClick={onBack}
-                className="flex items-center space-x-2 text-orange-600 hover:text-orange-700 mb-4"
-            >
-                <span>←</span>
-                <span>Back to Events</span>
-            </button>
+    // Format date for display
+    const formatDate = (dateString) => {
+        const date = new Date(dateString)
+        return date.toLocaleDateString('en-IN', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        })
+    }
 
-            {/* Header */}
-            <div className="bg-white rounded-lg p-8 border border-orange-200">
-                <h1 className="text-3xl font-bold text-gray-900 mb-4">{event.title}</h1>
+    // Format date range
+    const formatDateRange = (start, end) => {
+        const startDate = new Date(start)
+        const endDate = new Date(end)
 
-                <div className="flex items-center space-x-6 text-gray-600 mb-6">
-                    <span className="flex items-center space-x-1">
-                        <span>By</span>
-                        <span className="font-medium">{event.organizer}</span>
-                    </span>
-                    <span>•</span>
-                    <span>{event.date}</span>
-                    <span>•</span>
-                    <span>{event.location}</span>
-                    <span>•</span>
-                    <span className="flex items-center space-x-1">
-                        <span>Reward:</span>
-                        <span className="font-semibold text-green-600">{event.prize}</span>
-                    </span>
+        if (startDate.toDateString() === endDate.toDateString()) {
+            return `${startDate.toLocaleDateString('en-IN', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric'
+            })} • ${startDate.toLocaleTimeString('en-IN', {
+                hour: '2-digit',
+                minute: '2-digit'
+            })} - ${endDate.toLocaleTimeString('en-IN', {
+                hour: '2-digit',
+                minute: '2-digit'
+            })}`
+        } else {
+            return `${formatDate(start)} - ${formatDate(end)}`
+        }
+    }
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-64">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+                    <p className="text-gray-600">Loading event details...</p>
                 </div>
+            </div>
+        )
+    }
 
-                <div className="flex items-center space-x-4">
-                    <button
-                        onClick={handleRegister}
-                        className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-medium transition-colors ${isRegistered
-                            ? 'bg-green-600 text-white hover:bg-green-700'
-                            : 'bg-orange-600 text-white hover:bg-orange-700'
-                            }`}
-                    >
-                        <span>✓</span>
-                        <span>{isRegistered ? 'Registered' : 'Register'}</span>
-                    </button>
+    if (!event) {
+        return (
+            <div className="text-center py-12">
+                <div className="text-gray-400 text-6xl mb-4">❌</div>
+                <h3 className="text-xl font-semibold text-gray-700 mb-2">Event Not Found</h3>
+                <p className="text-gray-500 mb-4">The event you're looking for doesn't exist or has been removed.</p>
+                <button
+                    onClick={onBack}
+                    className="bg-orange-600 text-white px-6 py-2 rounded-lg hover:bg-orange-700"
+                >
+                    Go Back
+                </button>
+            </div>
+        )
+    }
 
-                    <button className="flex items-center space-x-2 px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
-                        <span>📤</span>
-                        <span>Submit Entry</span>
-                    </button>
+    const isRegistrationOpen = new Date() < new Date(event.registration?.deadline)
+    const isEventFull = false // Events can have unlimited participants
 
-                    <button className="flex items-center space-x-2 px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
-                        <span>📤</span>
-                        <span>Share</span>
-                    </button>
+    return (
+        <div className="max-w-4xl mx-auto">
+            {/* Header */}
+            <div className="mb-6">
+                <button
+                    onClick={onBack}
+                    className="flex items-center text-orange-600 hover:text-orange-700 mb-4"
+                >
+                    ← Back to Events
+                </button>
+
+                <div className="bg-gradient-to-r from-orange-400 to-orange-600 rounded-lg p-8 text-white">
+                    <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                            <div className="flex items-center space-x-3 mb-4">
+                                <span className="text-4xl">
+                                    {event.category === 'hackathon' ? '🤖' :
+                                        event.category === 'workshop' ? '📚' :
+                                            event.category === 'quiz' ? '❓' :
+                                                event.category === 'seminar' ? '💡' : '🎯'}
+                                </span>
+                                <div>
+                                    <span className="bg-white/20 text-white px-3 py-1 rounded-full text-sm font-medium capitalize">
+                                        {event.category}
+                                    </span>
+                                    <span className="bg-white/20 text-white px-3 py-1 rounded-full text-sm font-medium ml-2">
+                                        {event.mode}
+                                    </span>
+                                </div>
+                            </div>
+                            <h1 className="text-3xl font-bold mb-2">{event.title}</h1>
+                            <p className="text-orange-100 text-lg">{event.description}</p>
+                        </div>
+
+                        <div className="text-right">
+                            <div className="text-orange-100 text-sm mb-1">Organized by</div>
+                            <div className="font-semibold">{event.organizer?.name}</div>
+                            {event.organizer?.institution && (
+                                <div className="text-orange-100 text-sm">{event.organizer.institution}</div>
+                            )}
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Left Column - Main Content */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Main Content */}
                 <div className="lg:col-span-2 space-y-6">
-                    {/* Overview */}
-                    <div className="bg-white rounded-lg p-6 border border-orange-200">
-                        <h2 className="text-xl font-semibold text-gray-900 mb-4">Overview</h2>
-                        <p className="text-gray-700 leading-relaxed">{event.description}</p>
+                    {/* Event Details */}
+                    <div className="bg-white rounded-lg border border-gray-200 p-6">
+                        <h2 className="text-xl font-semibold text-gray-900 mb-4">Event Details</h2>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h3 className="font-medium text-gray-900 mb-2">📅 Date & Time</h3>
+                                <p className="text-gray-700">{formatDateRange(event.dateTime.start, event.dateTime.end)}</p>
+                            </div>
+
+                            <div>
+                                <h3 className="font-medium text-gray-900 mb-2">📍 Location</h3>
+                                <p className="text-gray-700">
+                                    {event.mode === 'Online' ? 'Online Event' :
+                                        `${event.location?.venue || ''} ${event.location?.city || ''}, ${event.location?.state || ''}`}
+                                </p>
+                            </div>
+
+                            <div>
+                                <h3 className="font-medium text-gray-900 mb-2">👥 Participants</h3>
+                                <p className="text-gray-700">
+                                    {event.registration?.currentParticipants || 0} registered
+                                </p>
+                            </div>
+
+                            <div>
+                                <h3 className="font-medium text-gray-900 mb-2">⏰ Registration Deadline</h3>
+                                <p className="text-gray-700">{formatDate(event.registration?.deadline)}</p>
+                            </div>
+
+                            {!event.registration?.fee?.isFree && (
+                                <div>
+                                    <h3 className="font-medium text-gray-900 mb-2">💰 Registration Fee</h3>
+                                    <p className="text-gray-700">₹{event.registration.fee.amount}</p>
+                                </div>
+                            )}
+
+                            {event.registration?.teamSize && (
+                                <div>
+                                    <h3 className="font-medium text-gray-900 mb-2">👥 Team Size</h3>
+                                    <p className="text-gray-700">
+                                        {event.registration.teamSize.min === event.registration.teamSize.max
+                                            ? `${event.registration.teamSize.min} member${event.registration.teamSize.min > 1 ? 's' : ''}`
+                                            : `${event.registration.teamSize.min} - ${event.registration.teamSize.max} members`}
+                                    </p>
+                                </div>
+                            )}
+                        </div>
                     </div>
 
-                    {/* Rules & Eligibility */}
-                    <div className="bg-white rounded-lg p-6 border border-orange-200">
-                        <h2 className="text-xl font-semibold text-gray-900 mb-4">Rules & Eligibility</h2>
-                        <ul className="space-y-2">
-                            {event.rules.map((rule, index) => (
-                                <li key={index} className="flex items-start space-x-2">
-                                    <span className="text-orange-600 mt-1">•</span>
-                                    <span className="text-gray-700">{rule}</span>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                    {/* Skills & Tags */}
+                    {(event.skills?.length > 0 || event.tags?.length > 0) && (
+                        <div className="bg-white rounded-lg border border-gray-200 p-6">
+                            <h2 className="text-xl font-semibold text-gray-900 mb-4">Skills & Tags</h2>
 
-                    {/* Timeline */}
-                    <div className="bg-white rounded-lg p-6 border border-orange-200">
-                        <h2 className="text-xl font-semibold text-gray-900 mb-4">Timeline</h2>
-                        <ul className="space-y-3">
-                            {event.timeline.map((item, index) => (
-                                <li key={index} className="flex items-start space-x-2">
-                                    <span className="text-orange-600 mt-1">•</span>
-                                    <div className="flex-1">
-                                        <span className="text-gray-700">{item.event}: </span>
-                                        <span className="font-medium text-gray-900">{item.date}</span>
+                            {event.skills?.length > 0 && (
+                                <div className="mb-4">
+                                    <h3 className="font-medium text-gray-900 mb-2">Required Skills</h3>
+                                    <div className="flex flex-wrap gap-2">
+                                        {event.skills.map((skill, index) => (
+                                            <span key={index} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                                                {skill}
+                                            </span>
+                                        ))}
                                     </div>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                                </div>
+                            )}
+
+                            {event.tags?.length > 0 && (
+                                <div>
+                                    <h3 className="font-medium text-gray-900 mb-2">Tags</h3>
+                                    <div className="flex flex-wrap gap-2">
+                                        {event.tags.map((tag, index) => (
+                                            <span key={index} className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
+                                                {tag}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Prizes */}
+                    {event.prizes?.length > 0 && (
+                        <div className="bg-white rounded-lg border border-gray-200 p-6">
+                            <h2 className="text-xl font-semibold text-gray-900 mb-4">🏆 Prizes</h2>
+                            <div className="space-y-4">
+                                {event.prizes.map((prize, index) => (
+                                    <div key={index} className="border border-gray-200 rounded-lg p-4">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <h3 className="font-medium text-gray-900">{prize.position}</h3>
+                                            {prize.amount > 0 && (
+                                                <span className="text-green-600 font-semibold">₹{prize.amount}</span>
+                                            )}
+                                        </div>
+                                        {prize.description && (
+                                            <p className="text-gray-700 text-sm">{prize.description}</p>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Requirements */}
+                    {event.registration?.requirements?.length > 0 && (
+                        <div className="bg-white rounded-lg border border-gray-200 p-6">
+                            <h2 className="text-xl font-semibold text-gray-900 mb-4">📋 Requirements</h2>
+                            <ul className="space-y-2">
+                                {event.registration.requirements.map((req, index) => (
+                                    <li key={index} className="flex items-start">
+                                        <span className="text-orange-500 mr-2">•</span>
+                                        <span className="text-gray-700">{req}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+
+                    {/* Schedule */}
+                    {event.schedule?.length > 0 && (
+                        <div className="bg-white rounded-lg border border-gray-200 p-6">
+                            <h2 className="text-xl font-semibold text-gray-900 mb-4">📅 Schedule</h2>
+                            <div className="space-y-4">
+                                {event.schedule.map((day, index) => (
+                                    <div key={index}>
+                                        <h3 className="font-medium text-gray-900 mb-2">{day.day}</h3>
+                                        <div className="space-y-2">
+                                            {day.events?.map((scheduleEvent, eventIndex) => (
+                                                <div key={eventIndex} className="flex items-start space-x-3 text-sm">
+                                                    <span className="text-orange-600 font-medium min-w-16">{scheduleEvent.time}</span>
+                                                    <div>
+                                                        <div className="font-medium text-gray-900">{scheduleEvent.activity}</div>
+                                                        {scheduleEvent.description && (
+                                                            <div className="text-gray-600">{scheduleEvent.description}</div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
                     {/* FAQs */}
-                    <div className="bg-white rounded-lg p-6 border border-orange-200">
-                        <h2 className="text-xl font-semibold text-gray-900 mb-4">FAQs</h2>
-                        <div className="space-y-4">
-                            {event.faqs.map((faq, index) => (
-                                <div key={index}>
-                                    <div className="flex items-start space-x-2 mb-1">
-                                        <span className="text-orange-600 mt-1">•</span>
-                                        <span className="font-medium text-gray-900">{faq.question}</span>
+                    {event.faqs?.length > 0 && (
+                        <div className="bg-white rounded-lg border border-gray-200 p-6">
+                            <h2 className="text-xl font-semibold text-gray-900 mb-4">❓ Frequently Asked Questions</h2>
+                            <div className="space-y-4">
+                                {event.faqs.map((faq, index) => (
+                                    <div key={index}>
+                                        <h3 className="font-medium text-gray-900 mb-1">{faq.question}</h3>
+                                        <p className="text-gray-700 text-sm">{faq.answer}</p>
                                     </div>
-                                    <p className="text-gray-700 ml-4">{faq.answer}</p>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
 
-                {/* Right Column - Sidebar */}
+                {/* Sidebar */}
                 <div className="space-y-6">
-                    {/* Prizes & Rewards */}
-                    <div className="bg-white rounded-lg p-6 border border-orange-200">
-                        <h2 className="text-xl font-semibold text-gray-900 mb-4">Prizes & Rewards</h2>
-                        <ul className="space-y-2">
-                            {event.prizes.map((prize, index) => (
-                                <li key={index} className="flex items-start space-x-2">
-                                    <span className="text-orange-600 mt-1">•</span>
-                                    <div>
-                                        <span className="font-medium text-gray-900">{prize.position}: </span>
-                                        <span className="text-green-600 font-semibold">
-                                            {prize.amount || prize.reward}
-                                        </span>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                    {/* Registration Card */}
+                    <div className="bg-white rounded-lg border border-gray-200 p-6">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Registration</h3>
 
-                    {/* Organizer */}
-                    <div className="bg-white rounded-lg p-6 border border-orange-200">
-                        <h2 className="text-xl font-semibold text-gray-900 mb-4">Organizer</h2>
-                        <div className="flex items-start space-x-3">
-                            <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center text-xl">
-                                {event.organizer_info.avatar}
-                            </div>
-                            <div className="flex-1">
-                                <h3 className="font-medium text-gray-900">{event.organizer_info.name}</h3>
-                                <div className="flex items-center space-x-2 text-sm text-gray-600 mt-1">
-                                    <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs">
-                                        {event.organizer_info.status}
-                                    </span>
-                                    <span>•</span>
-                                    <span>{event.organizer_info.events}</span>
-                                </div>
-                                <button className="text-orange-600 text-sm font-medium mt-2 hover:text-orange-700">
-                                    View Profile
+                        {!user ? (
+                            <div className="text-center">
+                                <p className="text-gray-600 mb-4">Please login to register for this event</p>
+                                <button className="w-full bg-gray-500 text-white py-2 px-4 rounded-lg">
+                                    Login Required
                                 </button>
                             </div>
+                        ) : isRegistered ? (
+                            <div className="text-center">
+                                <div className="text-green-600 text-4xl mb-2">✅</div>
+                                <p className="text-green-700 font-medium mb-4">You're registered!</p>
+                                <button
+                                    onClick={handleRegistration}
+                                    className="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700"
+                                >
+                                    Unregister
+                                </button>
+                            </div>
+                        ) : !isRegistrationOpen ? (
+                            <div className="text-center">
+                                <div className="text-red-600 text-4xl mb-2">⏰</div>
+                                <p className="text-red-700 font-medium mb-2">Registration Closed</p>
+                                <p className="text-gray-600 text-sm">Deadline was {formatDate(event.registration?.deadline)}</p>
+                            </div>
+                        ) : isEventFull ? (
+                            <div className="text-center">
+                                <div className="text-yellow-600 text-4xl mb-2">👥</div>
+                                <p className="text-yellow-700 font-medium mb-2">Event Full</p>
+                                <p className="text-gray-600 text-sm">Maximum participants reached</p>
+                            </div>
+                        ) : (
+                            <div className="text-center">
+                                <div className="text-orange-600 text-4xl mb-2">🎯</div>
+                                <p className="text-gray-700 mb-4">Ready to join this event?</p>
+                                <button
+                                    onClick={handleRegistration}
+                                    className="w-full bg-orange-600 text-white py-2 px-4 rounded-lg hover:bg-orange-700"
+                                >
+                                    Register Now
+                                </button>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Organizer Contact */}
+                    <div className="bg-white rounded-lg border border-gray-200 p-6">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Contact Organizer</h3>
+
+                        <div className="space-y-3">
+                            <div className="flex items-center space-x-3">
+                                <span className="text-gray-400">👤</span>
+                                <span className="text-gray-700">{event.organizer?.name}</span>
+                            </div>
+
+                            {event.organizer?.contact?.email && (
+                                <div className="flex items-center space-x-3">
+                                    <span className="text-gray-400">📧</span>
+                                    <a href={`mailto:${event.organizer.contact.email}`} className="text-orange-600 hover:underline">
+                                        {event.organizer.contact.email}
+                                    </a>
+                                </div>
+                            )}
+
+                            {event.organizer?.contact?.phone && (
+                                <div className="flex items-center space-x-3">
+                                    <span className="text-gray-400">📞</span>
+                                    <a href={`tel:${event.organizer.contact.phone}`} className="text-orange-600 hover:underline">
+                                        {event.organizer.contact.phone}
+                                    </a>
+                                </div>
+                            )}
+
+                            {event.organizer?.contact?.website && (
+                                <div className="flex items-center space-x-3">
+                                    <span className="text-gray-400">🌐</span>
+                                    <a href={event.organizer.contact.website} target="_blank" rel="noopener noreferrer" className="text-orange-600 hover:underline">
+                                        Website
+                                    </a>
+                                </div>
+                            )}
+
+                            {/* Social Media Links */}
+                            {(event.organizer?.contact?.socialMedia?.linkedin ||
+                                event.organizer?.contact?.socialMedia?.twitter ||
+                                event.organizer?.contact?.socialMedia?.instagram) && (
+                                    <div>
+                                        <div className="text-sm font-medium text-gray-900 mb-2">Social Media</div>
+                                        <div className="flex space-x-2">
+                                            {event.organizer.contact.socialMedia.linkedin && (
+                                                <a href={event.organizer.contact.socialMedia.linkedin} target="_blank" rel="noopener noreferrer"
+                                                    className="text-blue-600 hover:text-blue-700">
+                                                    LinkedIn
+                                                </a>
+                                            )}
+                                            {event.organizer.contact.socialMedia.twitter && (
+                                                <a href={event.organizer.contact.socialMedia.twitter} target="_blank" rel="noopener noreferrer"
+                                                    className="text-blue-400 hover:text-blue-500">
+                                                    Twitter
+                                                </a>
+                                            )}
+                                            {event.organizer.contact.socialMedia.instagram && (
+                                                <a href={event.organizer.contact.socialMedia.instagram} target="_blank" rel="noopener noreferrer"
+                                                    className="text-pink-600 hover:text-pink-700">
+                                                    Instagram
+                                                </a>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
                         </div>
                     </div>
 
-                    {/* Share */}
-                    <div className="bg-white rounded-lg p-6 border border-orange-200">
-                        <h2 className="text-xl font-semibold text-gray-900 mb-4">Share</h2>
-                        <div className="bg-gray-50 rounded-lg p-3 mb-4">
-                            <input
-                                type="text"
-                                value="https://liftuplabs.events/ai-hackathon"
-                                readOnly
-                                className="w-full bg-transparent text-gray-600 text-sm focus:outline-none"
-                            />
+                    {/* Social Links */}
+                    {(event.socialLinks?.discord || event.socialLinks?.telegram || event.socialLinks?.whatsapp) && (
+                        <div className="bg-white rounded-lg border border-gray-200 p-6">
+                            <h3 className="text-lg font-semibold text-gray-900 mb-4">Join Community</h3>
+
+                            <div className="space-y-3">
+                                {event.socialLinks.discord && (
+                                    <a href={event.socialLinks.discord} target="_blank" rel="noopener noreferrer"
+                                        className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50">
+                                        <span className="text-indigo-600">💬</span>
+                                        <span className="text-gray-700">Join Discord</span>
+                                    </a>
+                                )}
+
+                                {event.socialLinks.telegram && (
+                                    <a href={event.socialLinks.telegram} target="_blank" rel="noopener noreferrer"
+                                        className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50">
+                                        <span className="text-blue-600">✈️</span>
+                                        <span className="text-gray-700">Join Telegram</span>
+                                    </a>
+                                )}
+
+                                {event.socialLinks.whatsapp && (
+                                    <a href={event.socialLinks.whatsapp} target="_blank" rel="noopener noreferrer"
+                                        className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50">
+                                        <span className="text-green-600">📱</span>
+                                        <span className="text-gray-700">Join WhatsApp</span>
+                                    </a>
+                                )}
+                            </div>
                         </div>
-                        <div className="flex space-x-2">
-                            <button className="flex items-center space-x-2 px-3 py-2 bg-gray-100 rounded-lg text-gray-700 text-sm hover:bg-gray-200">
-                                <span>📋</span>
-                                <span>Copy</span>
-                            </button>
-                            <button className="flex items-center space-x-2 px-3 py-2 bg-gray-100 rounded-lg text-gray-700 text-sm hover:bg-gray-200">
-                                <span>𝕏</span>
-                                <span>X</span>
-                            </button>
-                            <button className="flex items-center space-x-2 px-3 py-2 bg-gray-100 rounded-lg text-gray-700 text-sm hover:bg-gray-200">
-                                <span>💼</span>
-                                <span>LinkedIn</span>
-                            </button>
-                        </div>
-                    </div>
+                    )}
                 </div>
             </div>
+
+            {/* Registration Form Modal */}
+            {showRegistrationForm && (
+                <EventRegistrationForm
+                    event={event}
+                    onClose={() => setShowRegistrationForm(false)}
+                    onRegistrationSuccess={handleRegistrationSuccess}
+                />
+            )}
         </div>
     )
 }

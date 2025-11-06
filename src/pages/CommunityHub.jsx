@@ -81,8 +81,8 @@ const CommunityHub = () => {
                     <button
                         onClick={() => setSelectedTab('discussions')}
                         className={`px-6 py-3 font-medium text-sm ${selectedTab === 'discussions'
-                                ? 'border-b-2 border-orange-600 text-orange-600'
-                                : 'text-gray-600 hover:text-gray-900'
+                            ? 'border-b-2 border-orange-600 text-orange-600'
+                            : 'text-gray-600 hover:text-gray-900'
                             }`}
                     >
                         🗨️ Discussions
@@ -90,8 +90,8 @@ const CommunityHub = () => {
                     <button
                         onClick={() => setSelectedTab('clubs')}
                         className={`px-6 py-3 font-medium text-sm ${selectedTab === 'clubs'
-                                ? 'border-b-2 border-orange-600 text-orange-600'
-                                : 'text-gray-600 hover:text-gray-900'
+                            ? 'border-b-2 border-orange-600 text-orange-600'
+                            : 'text-gray-600 hover:text-gray-900'
                             }`}
                     >
                         👥 Student Clubs
@@ -99,8 +99,8 @@ const CommunityHub = () => {
                     <button
                         onClick={() => setSelectedTab('mentorship')}
                         className={`px-6 py-3 font-medium text-sm ${selectedTab === 'mentorship'
-                                ? 'border-b-2 border-orange-600 text-orange-600'
-                                : 'text-gray-600 hover:text-gray-900'
+                            ? 'border-b-2 border-orange-600 text-orange-600'
+                            : 'text-gray-600 hover:text-gray-900'
                             }`}
                     >
                         🎯 Mentorship
@@ -108,8 +108,8 @@ const CommunityHub = () => {
                     <button
                         onClick={() => setSelectedTab('topics')}
                         className={`px-6 py-3 font-medium text-sm ${selectedTab === 'topics'
-                                ? 'border-b-2 border-orange-600 text-orange-600'
-                                : 'text-gray-600 hover:text-gray-900'
+                            ? 'border-b-2 border-orange-600 text-orange-600'
+                            : 'text-gray-600 hover:text-gray-900'
                             }`}
                     >
                         📚 Topics
@@ -209,83 +209,6 @@ const CommunityHub = () => {
                             ))}
                         </div>
                     )}
-                </div>
-            </div>
-
-            {/* Student Clubs Detail */}
-            <div className="bg-white rounded-lg p-6 border border-orange-200">
-                <h2 className="text-2xl font-semibold text-orange-900 mb-4">Student Clubs • Detail</h2>
-                <div className="bg-gradient-to-r from-blue-400 to-purple-500 h-48 rounded-lg mb-6 flex items-center justify-center">
-                    <span className="text-white text-lg">IIT ML Club</span>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">About</h3>
-                        <p className="text-gray-700 mb-4">
-                            We are a club where students, faculty, and researchers in ML enthusiasts.
-                        </p>
-
-                        <div className="space-y-2 mb-6">
-                            <h4 className="font-semibold text-gray-900">Upcoming events</h4>
-                            <ul className="text-sm text-gray-600 space-y-1">
-                                <li>• Paper Discussion Meetup</li>
-                                <li>• Kaggle Sprint #7</li>
-                                <li>• Project Showcase Evening</li>
-                            </ul>
-                        </div>
-
-                        <div className="space-y-2">
-                            <h4 className="font-semibold text-gray-900">Recent Posts</h4>
-                            <ul className="text-sm text-gray-600 space-y-1">
-                                <li>• New paper on attention mechanisms</li>
-                                <li>• Kaggle competition discussion</li>
-                                <li>• Project collaboration opportunities</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h4 className="font-semibold text-gray-900 mb-4">Moderators</h4>
-                        <div className="space-y-3 mb-6">
-                            <div className="flex items-center space-x-3">
-                                <div className="w-8 h-8 bg-orange-200 rounded-full flex items-center justify-center">
-                                    <span className="text-orange-700 text-xs font-medium">AS</span>
-                                </div>
-                                <div>
-                                    <div className="font-medium text-gray-900 text-sm">Ananya Sharma</div>
-                                    <div className="text-gray-600 text-xs">Club President</div>
-                                </div>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                                <div className="w-8 h-8 bg-orange-200 rounded-full flex items-center justify-center">
-                                    <span className="text-orange-700 text-xs font-medium">RK</span>
-                                </div>
-                                <div>
-                                    <div className="font-medium text-gray-900 text-sm">Rahul Kumar</div>
-                                    <div className="text-gray-600 text-xs">Technical Lead</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="space-y-3">
-                            <button className="w-full bg-orange-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-orange-700 transition-colors">
-                                Join Club
-                            </button>
-                            <button className="w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-medium hover:bg-gray-50 transition-colors">
-                                Share
-                            </button>
-                        </div>
-
-                        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-                            <h5 className="font-semibold text-gray-900 mb-2">Resources</h5>
-                            <div className="text-sm text-gray-600 space-y-1">
-                                <div>• Weekly ML Papers</div>
-                                <div>• Club Git Org</div>
-                                <div>• Discord Server</div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
