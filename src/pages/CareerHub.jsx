@@ -215,8 +215,8 @@ const CareerHub = () => {
                                 key={tab.id}
                                 onClick={() => setSelectedTab(tab.id)}
                                 className={`flex items-center space-x-2 py-4 border-b-2 font-medium text-sm transition-colors ${selectedTab === tab.id
-                                        ? 'border-orange-600 text-orange-600'
-                                        : 'border-transparent text-gray-500 hover:text-gray-700'
+                                    ? 'border-orange-600 text-orange-600'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700'
                                     }`}
                             >
                                 <span>{tab.icon}</span>

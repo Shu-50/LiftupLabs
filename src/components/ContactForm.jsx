@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import apiService from '../services/api'
 
 const ContactForm = () => {
     const [formData, setFormData] = useState({
@@ -9,6 +10,9 @@ const ContactForm = () => {
         message: '',
         sendCopy: false
     })
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const [submitStatus, setSubmitStatus] = useState(null) // 'success' or 'error'
+    const [errorMessage, setErrorMessage] = useState('')
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target
@@ -16,12 +20,48 @@ const ContactForm = () => {
             ...prev,
             [name]: type === 'checkbox' ? checked : value
         }))
+        // Clear error when user starts typing
+        if (submitStatus === 'error') {
+            setSubmitStatus(null)
+            setErrorMessage('')
+        }
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
-        console.log('Form submitted:', formData)
-        // Handle form submission here
+        setIsSubmitting(true)
+        setSubmitStatus(null)
+        setErrorMessage('')
+
+        try {
+            const response = await apiService.submitContactForm(formData)
+
+            if (response.success) {
+                setSubmitStatus('success')
+                // Reset form
+                setFormData({
+                    fullName: '',
+                    email: '',
+                    topic: '',
+                    relatedTo: 'General',
+                    message: '',
+                    sendCopy: false
+                })
+                // Clear success message after 5 seconds
+                setTimeout(() => {
+                    setSubmitStatus(null)
+                }, 5000)
+            } else {
+                setSubmitStatus('error')
+                setErrorMessage(response.message || 'Failed to send message')
+            }
+        } catch (error) {
+            console.error('Contact form error:', error)
+            setSubmitStatus('error')
+            setErrorMessage(error.response?.data?.message || 'Failed to send message. Please try again.')
+        } finally {
+            setIsSubmitting(false)
+        }
     }
 
     return (
@@ -30,6 +70,34 @@ const ContactForm = () => {
                 <h3 className="text-lg font-semibold text-orange-900 mb-2">Send us a message</h3>
                 <p className="text-gray-600 text-sm">We usually respond within 24 hours</p>
             </div>
+
+            {/* Success Message */}
+            {submitStatus === 'success' && (
+                <div className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
+                    <div className="flex items-start space-x-3">
+                        <span className="text-green-500 text-xl">✅</span>
+                        <div className="flex-1">
+                            <h4 className="font-semibold text-green-800">Message Sent Successfully!</h4>
+                            <p className="text-green-700 text-sm mt-1">
+                                Thank you for contacting us. We'll get back to you within 24-48 hours.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Error Message */}
+            {submitStatus === 'error' && (
+                <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
+                    <div className="flex items-start space-x-3">
+                        <span className="text-red-500 text-xl">⚠️</span>
+                        <div className="flex-1">
+                            <h4 className="font-semibold text-red-800">Failed to Send Message</h4>
+                            <p className="text-red-700 text-sm mt-1">{errorMessage}</p>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -75,11 +143,13 @@ const ContactForm = () => {
                             onChange={handleInputChange}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent bg-white"
                         >
-                            <option value="General">General</option>
-                            <option value="Events">Events</option>
-                            <option value="Notes">Notes</option>
-                            <option value="Technical">Technical</option>
+                            <option value="General">General Inquiry</option>
+                            <option value="Events">Events & Competitions</option>
+                            <option value="Notes">Notes & Resources</option>
+                            <option value="Technical">Technical Support</option>
                             <option value="Partnership">Partnership</option>
+                            <option value="Support">Customer Support</option>
+                            <option value="Feedback">Feedback</option>
                         </select>
                     </div>
                 </div>
@@ -110,10 +180,20 @@ const ContactForm = () => {
 
                     <button
                         type="submit"
-                        className="bg-orange-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-orange-700 transition-colors flex items-center space-x-2"
+                        disabled={isSubmitting}
+                        className="bg-orange-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-orange-700 transition-colors flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        <span>📤</span>
-                        <span>Submit</span>
+                        {isSubmitting ? (
+                            <>
+                                <span className="animate-spin">⏳</span>
+                                <span>Sending...</span>
+                            </>
+                        ) : (
+                            <>
+                                <span>📤</span>
+                                <span>Submit</span>
+                            </>
+                        )}
                     </button>
                 </div>
             </form>
