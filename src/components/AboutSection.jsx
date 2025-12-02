@@ -19,11 +19,8 @@ const AboutSection = () => {
                 </div>
             </div>
 
-            {/* About Section */}
-            <div className="mb-8">
-                <h2 className="text-2xl font-semibold text-orange-900 mb-3">
-                    Shivaaradhya Foundation
-                </h2>
+            <p className="text-gray-700 text-lg mb-8 leading-relaxed">
+                <h2>Shivaaradhya Foundation</h2> – United to Empower, Transform Lives, and Redefine Tomorrow
 
                 <p className="text-gray-700 text-lg leading-relaxed">
                     <strong>United to Empower, Transform Lives, and Redefine Tomorrow</strong><br /><br />
