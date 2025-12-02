@@ -16,7 +16,7 @@ const AboutSection = () => {
             </div>
 
             <p className="text-gray-700 text-lg mb-8 leading-relaxed">
-                <H2>Shivaaradhya Foundation</H2> – United to Empower, Transform Lives, and Redefine Tomorrow
+                <h2>Shivaaradhya Foundation</h2> – United to Empower, Transform Lives, and Redefine Tomorrow
 
 Shivaaradhya Foundation is a visionary NGO committed to uplifting communities through education, welfare, and sustainability. Guided by compassion and innovation, we aim to bring educational awareness, inspire a purposeful way of living, and drive meaningful change in society.
             </p>
