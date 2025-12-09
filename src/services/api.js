@@ -214,6 +214,80 @@ class ApiService {
     async submitContactForm(contactData) {
         return this.post('/contact', contactData);
     }
+
+    // Notes APIs
+    async getNotes(filters = {}) {
+        return this.get('/notes', filters);
+    }
+
+    async getNote(noteId) {
+        return this.get(`/notes/${noteId}`);
+    }
+
+    async uploadNote(formData) {
+        const token = this.getAuthToken();
+        const url = `${this.baseURL}/notes`;
+
+        const config = {
+            headers: {
+                // Don't set Content-Type for FormData, browser will set it with boundary
+                ...token && { Authorization: `Bearer ${token}` }
+            }
+        };
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: config.headers,
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                const error = new Error(data.message || 'Upload failed');
+                error.response = { data, status: response.status };
+                throw error;
+            }
+
+            return data;
+        } catch (error) {
+            console.error('Upload note error:', error);
+            throw error;
+        }
+    }
+
+    async updateNote(noteId, noteData) {
+        return this.put(`/notes/${noteId}`, noteData);
+    }
+
+    async deleteNote(noteId) {
+        return this.delete(`/notes/${noteId}`);
+    }
+
+    async downloadNote(noteId) {
+        return this.post(`/notes/${noteId}/download`);
+    }
+
+    async saveNote(noteId) {
+        return this.post(`/notes/${noteId}/save`);
+    }
+
+    async unsaveNote(noteId) {
+        return this.delete(`/notes/${noteId}/save`);
+    }
+
+    async rateNote(noteId, rating) {
+        return this.post(`/notes/${noteId}/rate`, { rating });
+    }
+
+    async getSavedNotes() {
+        return this.get('/notes/my/saved');
+    }
+
+    async getMyNotes() {
+        return this.get('/notes/my/uploaded');
+    }
 }
 
 export default new ApiService();
