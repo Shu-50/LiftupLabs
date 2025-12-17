@@ -165,10 +165,10 @@ const EventDetailsModal = ({ event, onClose }) => {
                                 <div className="bg-green-50 border border-green-200 rounded-lg p-3">
                                     <div className="text-sm font-medium text-green-700">Registration Fee</div>
                                     <div className="text-lg font-bold text-green-900">
-                                        {event.registration?.fee?.isFree === false ?
-                                            `₹${event.registration.fee.amount}` :
-                                            'Free'
-                                        }
+                                        {(() => {
+                                            const feeAmount = event.registration?.fee?.amount ?? event.registration?.fee ?? 0;
+                                            return feeAmount > 0 ? `₹${feeAmount}` : 'Free';
+                                        })()}
                                     </div>
                                 </div>
 
@@ -195,11 +195,12 @@ const EventDetailsModal = ({ event, onClose }) => {
                                 </div>
                             </div>
 
-                            {event.registration?.fee?.isFree === false && (
+                            {
+((event.registration?.fee > 0) || (event.registration?.fee?.amount > 0)) && (
                                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
                                     <div className="text-sm font-medium text-yellow-700">Revenue Generated</div>
                                     <div className="text-lg font-bold text-yellow-900">
-                                        ₹{((event.registration?.fee?.amount || 0) * (event.registration?.currentParticipants || 0)).toLocaleString()}
+                                        ₹{((event.registration?.fee?.amount || event.registration?.fee || 0) * (event.registration?.currentParticipants || 0)).toLocaleString()}
                                     </div>
                                     <div className="text-xs text-yellow-600">
                                         From {event.registration?.currentParticipants || 0} paid registrations

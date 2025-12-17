@@ -216,12 +216,15 @@ const EventDetails = ({ eventId, onBack }) => {
                                 <p className="text-gray-700">{formatDate(event.registration?.deadline)}</p>
                             </div>
 
-                            {!event.registration?.fee?.isFree && (
-                                <div>
-                                    <h3 className="font-medium text-gray-900 mb-2">💰 Registration Fee</h3>
-                                    <p className="text-gray-700">₹{event.registration.fee.amount}</p>
-                                </div>
-                            )}
+                            <div>
+                                <h3 className="font-medium text-gray-900 mb-2">💰 Registration Fee</h3>
+                                <p className="text-gray-700">
+                                    {(() => {
+                                        const feeAmount = event.registration?.fee?.amount ?? event.registration?.fee ?? 0;
+                                        return feeAmount > 0 ? `₹${feeAmount}` : 'Free';
+                                    })()}
+                                </p>
+                            </div>
 
                             {event.registration?.teamSize && (
                                 <div>

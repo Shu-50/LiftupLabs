@@ -20,7 +20,10 @@ const EditEventModal = ({ event, onClose, onEventUpdated }) => {
         registration: {
             deadline: '',
             maxParticipants: '',
-            fee: 0
+            fee: {
+                amount: 0,
+                isFree: true
+            }
         },
         prizes: [{ position: 'First', amount: 0, description: '' }],
         tags: [],
@@ -54,7 +57,10 @@ const EditEventModal = ({ event, onClose, onEventUpdated }) => {
                 registration: {
                     deadline: event.registration?.deadline ? new Date(event.registration.deadline).toISOString().slice(0, 16) : '',
                     maxParticipants: event.registration?.maxParticipants || '',
-                    fee: event.registration?.fee || 0
+                    fee: {
+                        amount: event.registration?.fee?.amount || event.registration?.fee || 0,
+                        isFree: event.registration?.fee?.isFree !== undefined ? event.registration.fee.isFree : true
+                    }
                 },
                 prizes: event.prizes?.length > 0 ? event.prizes : [{ position: 'First', amount: 0, description: '' }],
                 tags: event.tags || [],
@@ -158,12 +164,20 @@ const EditEventModal = ({ event, onClose, onEventUpdated }) => {
                 }
             }
 
-            await apiService.updateEvent(event._id, updateData)
+            console.log('=== FRONTEND: Updating event ===')
+            console.log('Event ID:', event._id)
+            console.log('Update data:', JSON.stringify(updateData, null, 2))
+
+            const response = await apiService.updateEvent(event._id, updateData)
+            
+            console.log('Update response:', response)
+            
             showSuccess('Event updated successfully')
             onEventUpdated()
             onClose()
         } catch (error) {
             console.error('Update event error:', error)
+            console.error('Error response:', error.response?.data)
             showError(error.response?.data?.message || 'Failed to update event')
         } finally {
             setIsLoading(false)
@@ -346,9 +360,24 @@ const EditEventModal = ({ event, onClose, onEventUpdated }) => {
                             <label className="block text-sm font-medium text-gray-700 mb-1">Registration Fee (₹)</label>
                             <input
                                 type="number"
-                                name="registration.fee"
-                                value={formData.registration.fee}
-                                onChange={handleInputChange}
+                                name="registration.fee.amount"
+                                value={formData.registration.fee.amount}
+                                onChange={(e) => {
+                                    const amount = parseInt(e.target.value) || 0;
+                                    handleInputChange({
+                                        target: {
+                                            name: 'registration',
+                                            value: {
+                                                ...formData.registration,
+                                                fee: {
+                                                    amount: amount,
+                                                    isFree: amount === 0,
+                                                    currency: 'INR'
+                                                }
+                                            }
+                                        }
+                                    });
+                                }}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300"
                                 min="0"
                             />

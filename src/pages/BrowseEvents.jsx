@@ -249,12 +249,19 @@ const BrowseEvents = () => {
                                         <span className="mr-2">⏰</span>
                                         <span>Deadline: {deadline.toLocaleDateString('en-IN')}</span>
                                     </div>
-                                    {event.registration?.fee?.isFree === false && (
-                                        <div className="flex items-center text-sm text-gray-600">
+                                    {(event.registration?.fee > 0 || event.registration?.fee?.amount > 0) && (
+                                        <div className="flex items-center text-sm font-semibold text-green-700">
                                             <span className="mr-2">💰</span>
-                                            <span>₹{event.registration.fee.amount}</span>
+                                            <span>₹{event.registration?.fee?.amount || event.registration?.fee || 0}</span>
                                         </div>
                                     )}
+                                    {(!event.registration?.fee && !event.registration?.fee?.amount) || 
+                                     (event.registration?.fee === 0 || event.registration?.fee?.amount === 0) ? (
+                                        <div className="flex items-center text-sm font-semibold text-green-700">
+                                            <span className="mr-2">🎫</span>
+                                            <span>Free</span>
+                                        </div>
+                                    ) : null}
                                 </div>
 
                                 <div className="flex flex-wrap gap-2 mb-4">

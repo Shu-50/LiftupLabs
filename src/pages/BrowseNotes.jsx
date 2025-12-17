@@ -293,6 +293,40 @@ const BrowseNotes = () => {
                                         {note.tags.slice(0, 3).map((tag, index) => (
                                             <span key={index} className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs">
                                                 {tag}
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {/* Action Buttons */}
+                                <div className="flex items-center space-x-2">
+                                    <button
+                                        onClick={() => handleDownload(note._id, note.fileUrl, note.fileName)}
+                                        className="flex-1 bg-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-orange-700 transition-colors"
+                                    >
+                                        📥 Download
+                                    </button>
+                                    <button
+                                        onClick={() => handlePreview(note.fileUrl)}
+                                        className="px-4 py-2 border border-orange-300 text-orange-700 rounded-lg font-medium hover:bg-orange-50 transition-colors"
+                                    >
+                                        👁️ Preview
+                                    </button>
+                                    {user && (
+                                        <button
+                                            onClick={() => handleSave(note._id, note.isSaved)}
+                                            className="px-4 py-2 border border-orange-300 text-orange-700 rounded-lg font-medium hover:bg-orange-50 transition-colors"
+                                        >
+                                            {note.isSaved ? '❤️' : '🤍'}
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+
             {/* Empty State */}
             {!loading && notes.length === 0 && (
                 <div className="text-center py-12 bg-white rounded-lg border border-orange-200">
