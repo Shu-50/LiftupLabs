@@ -6,13 +6,13 @@ const AboutUs = () => {
     return (
         <div className="space-y-8">
             {/* Hero Section */}
-            <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg p-12 text-white">
+            <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg p-6 sm:p-12 text-white">
                 <div className="max-w-4xl mx-auto text-center">
-                    <h1 className="text-5xl font-bold mb-4">About LiftupLabs</h1>
-                    <p className="text-xl opacity-90 mb-6">
+                    <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-2 sm:mb-4">About LiftupLabs</h1>
+                    <p className="text-sm sm:text-lg md:text-xl opacity-90 mb-4 sm:mb-6">
                         Empowering students, institutions, and professionals across India
                     </p>
-                    <div className="flex justify-center space-x-4">
+                    <div className="flex flex-col sm:flex-row justify-center gap-2 sm:space-x-4">
                         <a
                             href="#contact"
                             className="bg-white text-orange-600 px-6 py-3 rounded-lg font-medium hover:bg-orange-50 transition-colors"
@@ -34,93 +34,93 @@ const AboutUs = () => {
 
             {/* Mission & Vision */}
             <div id="mission" className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="bg-white rounded-lg p-8 border border-orange-200">
+                <div className="bg-white rounded-lg p-4 sm:p-8 border border-orange-200">
                     <div className="w-16 h-16 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
                         <span className="text-orange-600 text-3xl">🎯</span>
                     </div>
-                    <h2 className="text-2xl font-semibold text-orange-900 mb-4">Our Mission</h2>
-                    <p className="text-gray-700 leading-relaxed mb-4">
+                    <h2 className="text-lg sm:text-2xl font-semibold text-orange-900 mb-2 sm:mb-4">Our Mission</h2>
+                    <p className="text-gray-700 leading-relaxed mb-2 sm:mb-4 text-sm sm:text-base">
                         To create a unified platform that brings together events, learning resources, and career opportunities for the Indian student community.
                     </p>
-                    <p className="text-gray-700 leading-relaxed">
+                    <p className="text-gray-700 leading-relaxed text-sm sm:text-base">
                         We believe in democratizing access to quality education and opportunities, making it easier for students to discover, participate, and grow.
                     </p>
                 </div>
 
-                <div className="bg-white rounded-lg p-8 border border-orange-200">
+                <div className="bg-white rounded-lg p-4 sm:p-8 border border-orange-200">
                     <div className="w-16 h-16 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
                         <span className="text-orange-600 text-3xl">🚀</span>
                     </div>
-                    <h2 className="text-2xl font-semibold text-orange-900 mb-4">Our Vision</h2>
-                    <p className="text-gray-700 leading-relaxed mb-4">
+                    <h2 className="text-lg sm:text-2xl font-semibold text-orange-900 mb-2 sm:mb-4">Our Vision</h2>
+                    <p className="text-gray-700 leading-relaxed mb-2 sm:mb-4 text-sm sm:text-base">
                         To become India's most trusted platform for academic events, collaborative learning, and career development.
                     </p>
-                    <p className="text-gray-700 leading-relaxed">
+                    <p className="text-gray-700 leading-relaxed text-sm sm:text-base">
                         We envision a future where every student has equal access to opportunities, resources, and a supportive community to help them succeed.
                     </p>
                 </div>
             </div>
 
             {/* What We Offer */}
-            <div className="bg-white rounded-lg p-8 border border-orange-200">
-                <h2 className="text-2xl font-semibold text-orange-900 mb-6 text-center">What We Offer</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="text-center p-6 bg-orange-50 rounded-lg">
+            <div className="bg-white rounded-lg p-4 sm:p-8 border border-orange-200">
+                <h2 className="text-xl sm:text-2xl font-semibold text-orange-900 mb-4 sm:mb-6 text-center">What We Offer</h2>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6">
+                    <div className="text-center p-3 sm:p-6 bg-orange-50 rounded-lg">
                         <div className="w-16 h-16 bg-orange-600 rounded-lg flex items-center justify-center mx-auto mb-4">
                             <span className="text-white text-2xl">🎯</span>
                         </div>
-                        <h3 className="font-semibold text-gray-900 mb-2">Events & Competitions</h3>
-                        <p className="text-gray-600 text-sm">
+                        <h3 className="font-semibold text-gray-900 mb-1 sm:mb-2 text-xs sm:text-base">Events & Competitions</h3>
+                        <p className="text-gray-600 text-[10px] sm:text-sm">
                             Discover hackathons, workshops, seminars, and competitions from top institutions across India.
                         </p>
                     </div>
 
-                    <div className="text-center p-6 bg-orange-50 rounded-lg">
+                    <div className="text-center p-3 sm:p-6 bg-orange-50 rounded-lg">
                         <div className="w-16 h-16 bg-orange-600 rounded-lg flex items-center justify-center mx-auto mb-4">
                             <span className="text-white text-2xl">📚</span>
                         </div>
-                        <h3 className="font-semibold text-gray-900 mb-2">Study Resources</h3>
-                        <p className="text-gray-600 text-sm">
+                        <h3 className="font-semibold text-gray-900 mb-1 sm:mb-2 text-xs sm:text-base">Study Resources</h3>
+                        <p className="text-gray-600 text-[10px] sm:text-sm">
                             Access verified notes, PYQs, and study materials shared by students and educators.
                         </p>
                     </div>
 
-                    <div className="text-center p-6 bg-orange-50 rounded-lg">
+                    <div className="text-center p-3 sm:p-6 bg-orange-50 rounded-lg">
                         <div className="w-16 h-16 bg-orange-600 rounded-lg flex items-center justify-center mx-auto mb-4">
                             <span className="text-white text-2xl">💼</span>
                         </div>
-                        <h3 className="font-semibold text-gray-900 mb-2">Career Opportunities</h3>
-                        <p className="text-gray-600 text-sm">
+                        <h3 className="font-semibold text-gray-900 mb-1 sm:mb-2 text-xs sm:text-base">Career Opportunities</h3>
+                        <p className="text-gray-600 text-[10px] sm:text-sm">
                             Find internships, job openings, and connect with mentors to guide your career path.
                         </p>
                     </div>
 
-                    <div className="text-center p-6 bg-orange-50 rounded-lg">
+                    <div className="text-center p-3 sm:p-6 bg-orange-50 rounded-lg">
                         <div className="w-16 h-16 bg-orange-600 rounded-lg flex items-center justify-center mx-auto mb-4">
                             <span className="text-white text-2xl">🏛️</span>
                         </div>
-                        <h3 className="font-semibold text-gray-900 mb-2">Institution Network</h3>
-                        <p className="text-gray-600 text-sm">
+                        <h3 className="font-semibold text-gray-900 mb-1 sm:mb-2 text-xs sm:text-base">Institution Network</h3>
+                        <p className="text-gray-600 text-[10px] sm:text-sm">
                             Connect with verified colleges, universities, and student clubs across the country.
                         </p>
                     </div>
 
-                    <div className="text-center p-6 bg-orange-50 rounded-lg">
+                    <div className="text-center p-3 sm:p-6 bg-orange-50 rounded-lg">
                         <div className="w-16 h-16 bg-orange-600 rounded-lg flex items-center justify-center mx-auto mb-4">
                             <span className="text-white text-2xl">👥</span>
                         </div>
-                        <h3 className="font-semibold text-gray-900 mb-2">Community</h3>
-                        <p className="text-gray-600 text-sm">
+                        <h3 className="font-semibold text-gray-900 mb-1 sm:mb-2 text-xs sm:text-base">Community</h3>
+                        <p className="text-gray-600 text-[10px] sm:text-sm">
                             Join a vibrant community of learners, share knowledge, and collaborate on projects.
                         </p>
                     </div>
 
-                    <div className="text-center p-6 bg-orange-50 rounded-lg">
+                    <div className="text-center p-3 sm:p-6 bg-orange-50 rounded-lg">
                         <div className="w-16 h-16 bg-orange-600 rounded-lg flex items-center justify-center mx-auto mb-4">
                             <span className="text-white text-2xl">📝</span>
                         </div>
-                        <h3 className="font-semibold text-gray-900 mb-2">Host Events</h3>
-                        <p className="text-gray-600 text-sm">
+                        <h3 className="font-semibold text-gray-900 mb-1 sm:mb-2 text-xs sm:text-base">Host Events</h3>
+                        <p className="text-gray-600 text-[10px] sm:text-sm">
                             Organize and manage your own events with our easy-to-use event hosting platform.
                         </p>
                     </div>
@@ -128,24 +128,24 @@ const AboutUs = () => {
             </div>
 
             {/* Stats Section */}
-            <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg p-8 text-white">
-                <h2 className="text-2xl font-semibold mb-8 text-center">Our Impact</h2>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg p-4 sm:p-8 text-white">
+                <h2 className="text-xl sm:text-2xl font-semibold mb-4 sm:mb-8 text-center">Our Impact</h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6">
                     <div className="text-center">
-                        <div className="text-4xl font-bold mb-2">10K+</div>
-                        <div className="text-orange-100">Active Users</div>
+                        <div className="text-2xl sm:text-4xl font-bold mb-1 sm:mb-2">10K+</div>
+                        <div className="text-orange-100 text-xs sm:text-base">Active Users</div>
                     </div>
                     <div className="text-center">
-                        <div className="text-4xl font-bold mb-2">500+</div>
-                        <div className="text-orange-100">Events Hosted</div>
+                        <div className="text-2xl sm:text-4xl font-bold mb-1 sm:mb-2">500+</div>
+                        <div className="text-orange-100 text-xs sm:text-base">Events Hosted</div>
                     </div>
                     <div className="text-center">
-                        <div className="text-4xl font-bold mb-2">100+</div>
-                        <div className="text-orange-100">Institutions</div>
+                        <div className="text-2xl sm:text-4xl font-bold mb-1 sm:mb-2">100+</div>
+                        <div className="text-orange-100 text-xs sm:text-base">Institutions</div>
                     </div>
                     <div className="text-center">
-                        <div className="text-4xl font-bold mb-2">50K+</div>
-                        <div className="text-orange-100">Resources Shared</div>
+                        <div className="text-2xl sm:text-4xl font-bold mb-1 sm:mb-2">50K+</div>
+                        <div className="text-orange-100 text-xs sm:text-base">Resources Shared</div>
                     </div>
                 </div>
             </div>

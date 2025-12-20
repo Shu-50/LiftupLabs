@@ -86,9 +86,9 @@ const LoginPage = ({ onLogin, onSwitchToRegister }) => {
     }
 
     return (
-        <div className="min-h-screen bg-orange-50 flex">
-            {/* Left Sidebar */}
-            <div className="w-64 bg-orange-100 border-r border-orange-200 flex flex-col">
+        <div className="min-h-screen bg-orange-50 flex flex-col lg:flex-row">
+            {/* Left Sidebar - Hidden on mobile */}
+            <div className="hidden lg:flex lg:w-64 bg-orange-100 border-r border-orange-200 flex-col">
                 {/* Logo */}
                 <div className="p-4 border-b border-orange-200">
                     <div className="flex items-center space-x-2">
@@ -149,13 +149,13 @@ const LoginPage = ({ onLogin, onSwitchToRegister }) => {
             </div>
 
             {/* Main Content */}
-            <div className="flex-1 flex flex-col">
+            <div className="flex-1 flex flex-col w-full">
                 {/* Header */}
-                <header className="bg-white border-b border-orange-200 px-6 py-4">
+                <header className="bg-white border-b border-orange-200 px-4 py-3 sm:px-6 sm:py-4">
                     <div className="flex items-center justify-between">
-                        <span className="text-orange-700 font-medium">Welcome</span>
+                        <span className="text-orange-700 font-medium text-sm sm:text-base">Welcome</span>
                         <div className="flex items-center space-x-4">
-                            <span className="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm font-medium">
+                            <span className="bg-orange-100 text-orange-700 px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-xs sm:text-sm font-medium">
                                 BETA
                             </span>
                             <div className="w-8 h-8 bg-orange-600 rounded-full flex items-center justify-center">
@@ -166,17 +166,17 @@ const LoginPage = ({ onLogin, onSwitchToRegister }) => {
                 </header>
 
                 {/* Login Content */}
-                <main className="flex-1 p-6 flex items-center justify-center">
+                <main className="flex-1 p-4 sm:p-6 flex items-center justify-center">
                     <div className="max-w-4xl w-full">
-                        <div className="bg-white rounded-lg p-8 border border-orange-200">
-                            <div className="flex items-center justify-between mb-6">
-                                <h1 className="text-3xl font-bold text-orange-900">Sign in or Create account</h1>
-                                <div className="flex items-center space-x-4">
-                                    <button className="flex items-center space-x-2 px-4 py-2 border border-orange-300 rounded-lg text-orange-700 hover:bg-orange-50">
+                        <div className="bg-white rounded-lg p-4 sm:p-6 md:p-8 border border-orange-200">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 space-y-3 sm:space-y-0">
+                                <h1 className="text-2xl sm:text-3xl font-bold text-orange-900">Sign in or Create account</h1>
+                                <div className="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto">
+                                    <button className="flex-1 sm:flex-none flex items-center justify-center space-x-2 px-3 py-2 sm:px-4 sm:py-2 border border-orange-300 rounded-lg text-orange-700 hover:bg-orange-50 text-sm sm:text-base">
                                         <span>🔒</span>
                                         <span>Privacy</span>
                                     </button>
-                                    <button className="flex items-center space-x-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700">
+                                    <button className="flex-1 sm:flex-none flex items-center justify-center space-x-2 px-3 py-2 sm:px-4 sm:py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 text-sm sm:text-base">
                                         <span>❓</span>
                                         <span>Need Help</span>
                                     </button>
@@ -185,7 +185,7 @@ const LoginPage = ({ onLogin, onSwitchToRegister }) => {
 
                             <p className="text-gray-700 mb-8">Access events, resources, and your learning hub</p>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
                                 {/* Login Form */}
                                 <div>
                                     <div className="flex items-center justify-between mb-6">
@@ -339,7 +339,7 @@ const LoginPage = ({ onLogin, onSwitchToRegister }) => {
                             </div>
 
                             {/* Features */}
-                            <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className="mt-8 sm:mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
                                 <div className="text-center p-4">
                                     <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-3">
                                         <span className="text-orange-600 text-xl">🏆</span>

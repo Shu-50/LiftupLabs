@@ -127,51 +127,51 @@ const AdminDashboard = () => {
     const renderOverview = () => (
         <div className="space-y-6">
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="bg-white rounded-lg p-6 border border-orange-200">
-                    <div className="flex items-center">
-                        <div className="p-2 bg-blue-100 rounded-lg">
-                            <span className="text-2xl">👥</span>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-6">
+                <div className="bg-white rounded-lg p-3 sm:p-6 border border-orange-200">
+                    <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left">
+                        <div className="p-1.5 sm:p-2 bg-blue-100 rounded-lg mb-2 sm:mb-0">
+                            <span className="text-xl sm:text-2xl">👥</span>
                         </div>
-                        <div className="ml-4">
-                            <p className="text-sm font-medium text-gray-600">Total Users</p>
-                            <p className="text-2xl font-bold text-gray-900">{stats.overview?.totalUsers || 0}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="bg-white rounded-lg p-6 border border-orange-200">
-                    <div className="flex items-center">
-                        <div className="p-2 bg-green-100 rounded-lg">
-                            <span className="text-2xl">🎯</span>
-                        </div>
-                        <div className="ml-4">
-                            <p className="text-sm font-medium text-gray-600">Total Events</p>
-                            <p className="text-2xl font-bold text-gray-900">{stats.overview?.totalEvents || 0}</p>
+                        <div className="sm:ml-4">
+                            <p className="text-[10px] sm:text-sm font-medium text-gray-600">Total Users</p>
+                            <p className="text-lg sm:text-2xl font-bold text-gray-900">{stats.overview?.totalUsers || 0}</p>
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-white rounded-lg p-6 border border-orange-200">
-                    <div className="flex items-center">
-                        <div className="p-2 bg-orange-100 rounded-lg">
-                            <span className="text-2xl">🔥</span>
+                <div className="bg-white rounded-lg p-3 sm:p-6 border border-orange-200">
+                    <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left">
+                        <div className="p-1.5 sm:p-2 bg-green-100 rounded-lg mb-2 sm:mb-0">
+                            <span className="text-xl sm:text-2xl">🎯</span>
                         </div>
-                        <div className="ml-4">
-                            <p className="text-sm font-medium text-gray-600">Active Events</p>
-                            <p className="text-2xl font-bold text-gray-900">{stats.overview?.activeEvents || 0}</p>
+                        <div className="sm:ml-4">
+                            <p className="text-[10px] sm:text-sm font-medium text-gray-600">Total Events</p>
+                            <p className="text-lg sm:text-2xl font-bold text-gray-900">{stats.overview?.totalEvents || 0}</p>
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-white rounded-lg p-6 border border-orange-200">
-                    <div className="flex items-center">
-                        <div className="p-2 bg-purple-100 rounded-lg">
-                            <span className="text-2xl">📝</span>
+                <div className="bg-white rounded-lg p-3 sm:p-6 border border-orange-200">
+                    <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left">
+                        <div className="p-1.5 sm:p-2 bg-orange-100 rounded-lg mb-2 sm:mb-0">
+                            <span className="text-xl sm:text-2xl">🔥</span>
                         </div>
-                        <div className="ml-4">
-                            <p className="text-sm font-medium text-gray-600">Total Registrations</p>
-                            <p className="text-2xl font-bold text-gray-900">{stats.overview?.totalRegistrations || 0}</p>
+                        <div className="sm:ml-4">
+                            <p className="text-[10px] sm:text-sm font-medium text-gray-600">Active Events</p>
+                            <p className="text-lg sm:text-2xl font-bold text-gray-900">{stats.overview?.activeEvents || 0}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="bg-white rounded-lg p-3 sm:p-6 border border-orange-200">
+                    <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left">
+                        <div className="p-1.5 sm:p-2 bg-purple-100 rounded-lg mb-2 sm:mb-0">
+                            <span className="text-xl sm:text-2xl">📝</span>
+                        </div>
+                        <div className="sm:ml-4">
+                            <p className="text-[10px] sm:text-sm font-medium text-gray-600">Registrations</p>
+                            <p className="text-lg sm:text-2xl font-bold text-gray-900">{stats.overview?.totalRegistrations || 0}</p>
                         </div>
                     </div>
                 </div>

@@ -64,12 +64,18 @@ function AuthRoute({ children }) {
 // Main Dashboard Component
 function Dashboard() {
   const [activeSection, setActiveSection] = useState('home')
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   return (
-    <div className="flex h-screen bg-orange-50 overflow-hidden">
-      <Sidebar activeSection={activeSection} setActiveSection={setActiveSection} />
+    <div className="flex flex-col md:flex-row h-screen bg-orange-50 overflow-hidden">
+      <Sidebar 
+        activeSection={activeSection} 
+        setActiveSection={setActiveSection}
+        isMobileMenuOpen={isMobileMenuOpen}
+        setIsMobileMenuOpen={setIsMobileMenuOpen}
+      />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Header />
+        <Header onMenuToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)} />
         <MainContent activeSection={activeSection} />
       </div>
     </div>

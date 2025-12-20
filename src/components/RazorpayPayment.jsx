@@ -161,15 +161,15 @@ const RazorpayPayment = memo(({
     }
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 p-4">
-            <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 p-2 sm:p-4">
+            <div className="bg-white rounded-lg w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
                 {/* Header */}
-                <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4">
+                <div className="sticky top-0 bg-white border-b border-gray-200 px-4 sm:px-6 py-3 sm:py-4 z-10">
                     <div className="flex items-center justify-between">
-                        <h2 className="text-2xl font-bold text-gray-900">Complete Payment</h2>
+                        <h2 className="text-lg sm:text-2xl font-bold text-gray-900">Complete Payment</h2>
                         <button
                             onClick={onClose}
-                            className="text-gray-400 hover:text-gray-600 text-2xl"
+                            className="text-gray-400 hover:text-gray-600 text-2xl sm:text-3xl w-8 h-8 flex items-center justify-center"
                             disabled={loading}
                         >
                             ✕
@@ -178,11 +178,11 @@ const RazorpayPayment = memo(({
                 </div>
 
                 {/* Content */}
-                <div className="p-6 space-y-6">
+                <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
                     {/* Event Details */}
-                    <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
-                        <h3 className="font-semibold text-orange-900 mb-2">{event.title}</h3>
-                        <div className="text-sm text-orange-800 space-y-1">
+                    <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 sm:p-4">
+                        <h3 className="font-semibold text-orange-900 mb-2 text-sm sm:text-base">{event.title}</h3>
+                        <div className="text-xs sm:text-sm text-orange-800 space-y-1">
                             <p>📅 {new Date(event.dateTime?.start).toLocaleDateString('en-IN', {
                                 day: 'numeric',
                                 month: 'long',
@@ -196,18 +196,18 @@ const RazorpayPayment = memo(({
                     </div>
 
                     {/* Payment Amount */}
-                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-3 sm:p-4">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm text-green-700">Total Amount</p>
-                                <p className="text-3xl font-bold text-green-900">₹{totalAmount}</p>
+                                <p className="text-xs sm:text-sm text-green-700">Total Amount</p>
+                                <p className="text-2xl sm:text-3xl font-bold text-green-900">₹{totalAmount}</p>
                                 {registrationData.teamSize > 1 && (
                                     <p className="text-xs text-green-600 mt-1">
                                         ₹{event.registration?.fee?.amount} × {registrationData.teamSize} members
                                     </p>
                                 )}
                             </div>
-                            <div className="text-4xl">💳</div>
+                            <div className="text-3xl sm:text-4xl">💳</div>
                         </div>
                     </div>
 
@@ -216,17 +216,17 @@ const RazorpayPayment = memo(({
                         <div className="flex border-b border-gray-200">
                             <button
                                 onClick={() => setShowQR(false)}
-                                className={`flex-1 px-4 py-3 font-medium transition-colors ${
+                                className={`flex-1 px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm font-medium transition-colors ${
                                     !showQR
                                         ? 'bg-orange-600 text-white'
                                         : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
                                 }`}
                             >
-                                All Payment Methods
+                                All Methods
                             </button>
                             <button
                                 onClick={() => setShowQR(true)}
-                                className={`flex-1 px-4 py-3 font-medium transition-colors ${
+                                className={`flex-1 px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm font-medium transition-colors ${
                                     showQR
                                         ? 'bg-orange-600 text-white'
                                         : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
@@ -236,65 +236,65 @@ const RazorpayPayment = memo(({
                             </button>
                         </div>
 
-                        <div className="p-6">
+                        <div className="p-4 sm:p-6">
                             {!showQR ? (
-                                <div className="text-center space-y-4">
-                                    <p className="text-gray-700 mb-4">
+                                <div className="text-center space-y-3 sm:space-y-4">
+                                    <p className="text-gray-700 text-sm sm:text-base mb-3 sm:mb-4">
                                         Click below to pay using any of these methods:
                                     </p>
-                                    <div className="grid grid-cols-2 gap-3 mb-6">
-                                        <div className="bg-gray-50 p-3 rounded-lg text-sm">
+                                    <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-4 sm:mb-6">
+                                        <div className="bg-gray-50 p-2 sm:p-3 rounded-lg text-xs sm:text-sm">
                                             <span className="font-medium">💳</span> Cards
                                         </div>
-                                        <div className="bg-gray-50 p-3 rounded-lg text-sm">
+                                        <div className="bg-gray-50 p-2 sm:p-3 rounded-lg text-xs sm:text-sm">
                                             <span className="font-medium">📱</span> UPI
                                         </div>
-                                        <div className="bg-gray-50 p-3 rounded-lg text-sm">
+                                        <div className="bg-gray-50 p-2 sm:p-3 rounded-lg text-xs sm:text-sm">
                                             <span className="font-medium">🏦</span> Netbanking
                                         </div>
-                                        <div className="bg-gray-50 p-3 rounded-lg text-sm">
+                                        <div className="bg-gray-50 p-2 sm:p-3 rounded-lg text-xs sm:text-sm">
                                             <span className="font-medium">👛</span> Wallets
                                         </div>
                                     </div>
                                     <button
                                         onClick={openRazorpayCheckout}
                                         disabled={loading || !razorpayLoaded}
-                                        className="w-full bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                        className="w-full bg-orange-600 text-white px-4 sm:px-6 py-3 sm:py-3.5 rounded-lg text-sm sm:text-base font-semibold hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors min-h-[44px]"
                                     >
                                         {loading ? 'Processing...' : 'Proceed to Payment'}
                                     </button>
                                 </div>
                             ) : (
-                                <div className="text-center space-y-4">
-                                    <p className="text-gray-700 mb-4">
+                                <div className="text-center space-y-3 sm:space-y-4">
+                                    <p className="text-gray-700 text-sm sm:text-base mb-3 sm:mb-4">
                                         Scan this QR code with any UPI app to pay
                                     </p>
                                     {paymentData?.qrCode && (
-                                        <div className="flex justify-center mb-4">
-                                            <div className="bg-white p-4 rounded-lg border-2 border-gray-200">
+                                        <div className="flex justify-center mb-3 sm:mb-4">
+                                            <div className="bg-white p-3 sm:p-4 rounded-lg border-2 border-gray-200">
                                                 <img 
                                                     src={paymentData.qrCode} 
                                                     alt="Payment QR Code"
-                                                    className="w-64 h-64"
+                                                    className="w-48 h-48 sm:w-64 sm:h-64"
                                                 />
                                             </div>
                                         </div>
                                     )}
-                                    <div className="flex flex-wrap justify-center gap-2 mb-4">
-                                        <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-medium">
+                                    <div className="flex flex-wrap justify-center gap-2 mb-3 sm:mb-4">
+                                        <span className="bg-purple-100 text-purple-800 px-2 sm:px-3 py-1 rounded-full text-xs font-medium">
                                             Google Pay
                                         </span>
-                                        <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-medium">
+                                        <span className="bg-blue-100 text-blue-800 px-2 sm:px-3 py-1 rounded-full text-xs font-medium">
                                             PhonePe
                                         </span>
-                                        <span className="bg-cyan-100 text-cyan-800 px-3 py-1 rounded-full text-xs font-medium">
+                                        <span className="bg-cyan-100 text-cyan-800 px-2 sm:px-3 py-1 rounded-full text-xs font-medium">
                                             Paytm
                                         </span>
-                                        <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium">
+                                        <span className="bg-green-100 text-green-800 px-2 sm:px-3 py-1 rounded-full text-xs font-medium">
                                             BHIM
                                         </span>
                                     </div>
-                                    <p className="text-sm text-gray-500">
+                                    <p className="text-xs sm:text-sm text-gray-500">
                                         Payment will be verified automatically
                                     </p>
                                 </div>
@@ -303,18 +303,18 @@ const RazorpayPayment = memo(({
                     </div>
 
                     {/* Security Badge */}
-                    <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
+                    <div className="flex items-center justify-center gap-2 text-xs sm:text-sm text-gray-600">
                         <span>🔒</span>
                         <span>Secured by Razorpay</span>
                     </div>
                 </div>
 
                 {/* Footer */}
-                <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-6 py-4">
+                <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-4 sm:px-6 py-3 sm:py-4">
                     <button
                         onClick={onClose}
                         disabled={loading}
-                        className="w-full px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 disabled:opacity-50 transition-colors"
+                        className="w-full px-4 sm:px-6 py-2.5 sm:py-3 border border-gray-300 text-gray-700 rounded-lg text-sm sm:text-base hover:bg-gray-100 disabled:opacity-50 transition-colors min-h-[44px]"
                     >
                         Cancel
                     </button>

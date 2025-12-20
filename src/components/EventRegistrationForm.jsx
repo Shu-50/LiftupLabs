@@ -183,14 +183,14 @@ const EventRegistrationForm = ({ event, onClose, onRegistrationSuccess }) => {
     const isTeamEvent = (event.registration?.teamSize?.max || 1) > 1
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{ backgroundColor: 'rgba(0, 0, 0, 0.24)' }}>
-            <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-                <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4">
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-2 sm:p-4" style={{ backgroundColor: 'rgba(0, 0, 0, 0.24)' }}>
+            <div className="bg-white rounded-lg w-full mx-2 sm:mx-0 sm:max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+                <div className="sticky top-0 bg-white border-b border-gray-200 px-4 py-3 sm:px-6 sm:py-4">
                     <div className="flex items-center justify-between">
-                        <h2 className="text-2xl font-bold text-gray-900">Register for Event</h2>
+                        <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Register for Event</h2>
                         <button
                             onClick={onClose}
-                            className="text-gray-400 hover:text-gray-600"
+                            className="text-gray-400 hover:text-gray-600 p-2"
                         >
                             ✕
                         </button>
@@ -198,11 +198,11 @@ const EventRegistrationForm = ({ event, onClose, onRegistrationSuccess }) => {
                     <p className="text-gray-600 mt-1">{event.title}</p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="p-6 space-y-6">
+                <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 sm:space-y-6">
                     {/* Contact Information */}
                     <div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Contact Information</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Contact Information</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
                                 <input
@@ -210,7 +210,7 @@ const EventRegistrationForm = ({ event, onClose, onRegistrationSuccess }) => {
                                     name="phone"
                                     value={formData.phone}
                                     onChange={handleInputChange}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300"
+                                    className="w-full px-3 py-2 sm:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 text-sm sm:text-base"
                                     placeholder="Your phone number"
                                     required
                                 />
@@ -222,7 +222,7 @@ const EventRegistrationForm = ({ event, onClose, onRegistrationSuccess }) => {
                                     name="alternateEmail"
                                     value={formData.alternateEmail}
                                     onChange={handleInputChange}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300"
+                                    className="w-full px-3 py-2 sm:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 text-sm sm:text-base"
                                     placeholder="Alternate email (optional)"
                                 />
                             </div>
@@ -232,9 +232,9 @@ const EventRegistrationForm = ({ event, onClose, onRegistrationSuccess }) => {
                     {/* Team Information */}
                     {isTeamEvent && (
                         <div>
-                            <h3 className="text-lg font-semibold text-gray-900 mb-4">Team Information</h3>
+                            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Team Information</h3>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-4">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Team Name *</label>
                                     <input
@@ -242,7 +242,7 @@ const EventRegistrationForm = ({ event, onClose, onRegistrationSuccess }) => {
                                         name="teamName"
                                         value={formData.teamName}
                                         onChange={handleInputChange}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300"
+                                        className="w-full px-3 py-2 sm:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 text-sm sm:text-base"
                                         placeholder="Your team name"
                                         required={isTeamEvent}
                                     />
@@ -252,7 +252,7 @@ const EventRegistrationForm = ({ event, onClose, onRegistrationSuccess }) => {
                                     <select
                                         value={formData.teamSize}
                                         onChange={(e) => handleTeamSizeChange(parseInt(e.target.value))}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300"
+                                        className="w-full px-3 py-2 sm:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 text-sm sm:text-base"
                                     >
                                         {Array.from(
                                             { length: (event.registration?.teamSize?.max || 1) - (event.registration?.teamSize?.min || 1) + 1 },
@@ -268,23 +268,23 @@ const EventRegistrationForm = ({ event, onClose, onRegistrationSuccess }) => {
                             {formData.teamSize > 1 && (
                                 <div>
                                     <h4 className="text-md font-semibold text-gray-800 mb-3">Team Members</h4>
-                                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
-                                        <p className="text-blue-800 text-sm">
+                                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-2 sm:p-3 mb-3 sm:mb-4">
+                                        <p className="text-blue-800 text-xs sm:text-sm">
                                             <strong>Team Leader:</strong> {user.name} ({user.email})
                                         </p>
                                     </div>
 
                                     {formData.teamMembers.slice(1).map((member, index) => (
-                                        <div key={index} className="border border-gray-200 rounded-lg p-4 mb-4">
-                                            <h5 className="font-medium text-gray-900 mb-3">Team Member {index + 2}</h5>
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        <div key={index} className="border border-gray-200 rounded-lg p-3 sm:p-4 mb-3 sm:mb-4">
+                                            <h5 className="font-medium text-gray-900 mb-3 text-sm sm:text-base">Team Member {index + 2}</h5>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3">
                                                 <div>
                                                     <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
                                                     <input
                                                         type="text"
                                                         value={member.name}
                                                         onChange={(e) => handleTeamMemberChange(index + 1, 'name', e.target.value)}
-                                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300"
+                                                        className="w-full px-3 py-2 sm:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 text-sm sm:text-base"
                                                         placeholder="Member name"
                                                         required
                                                     />
@@ -295,7 +295,7 @@ const EventRegistrationForm = ({ event, onClose, onRegistrationSuccess }) => {
                                                         type="email"
                                                         value={member.email}
                                                         onChange={(e) => handleTeamMemberChange(index + 1, 'email', e.target.value)}
-                                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300"
+                                                        className="w-full px-3 py-2 sm:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 text-sm sm:text-base"
                                                         placeholder="Member email"
                                                         required
                                                     />
@@ -306,7 +306,7 @@ const EventRegistrationForm = ({ event, onClose, onRegistrationSuccess }) => {
                                                         type="tel"
                                                         value={member.phone}
                                                         onChange={(e) => handleTeamMemberChange(index + 1, 'phone', e.target.value)}
-                                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300"
+                                                        className="w-full px-3 py-2 sm:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 text-sm sm:text-base"
                                                         placeholder="Member phone"
                                                     />
                                                 </div>
@@ -316,7 +316,7 @@ const EventRegistrationForm = ({ event, onClose, onRegistrationSuccess }) => {
                                                         type="text"
                                                         value={member.institution}
                                                         onChange={(e) => handleTeamMemberChange(index + 1, 'institution', e.target.value)}
-                                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300"
+                                                        className="w-full px-3 py-2 sm:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 text-sm sm:text-base"
                                                         placeholder="Member institution"
                                                     />
                                                 </div>
@@ -330,7 +330,7 @@ const EventRegistrationForm = ({ event, onClose, onRegistrationSuccess }) => {
 
                     {/* Additional Information */}
                     <div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Additional Information</h3>
+                        <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Additional Information</h3>
                         <div className="space-y-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Institution</label>
@@ -339,7 +339,7 @@ const EventRegistrationForm = ({ event, onClose, onRegistrationSuccess }) => {
                                     name="institution"
                                     value={formData.institution}
                                     onChange={handleInputChange}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300"
+                                    className="w-full px-3 py-2 sm:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 text-sm sm:text-base"
                                     placeholder="Your institution/organization"
                                 />
                             </div>
@@ -349,7 +349,7 @@ const EventRegistrationForm = ({ event, onClose, onRegistrationSuccess }) => {
                                     name="experience"
                                     value={formData.experience}
                                     onChange={handleInputChange}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300"
+                                    className="w-full px-3 py-2 sm:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 text-sm sm:text-base"
                                 >
                                     <option value="">Select experience level</option>
                                     <option value="beginner">Beginner</option>
@@ -364,8 +364,8 @@ const EventRegistrationForm = ({ event, onClose, onRegistrationSuccess }) => {
                                     name="motivation"
                                     value={formData.motivation}
                                     onChange={handleInputChange}
-                                    rows={3}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300"
+                                    rows={2}
+                                    className="w-full px-3 py-2 sm:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 text-sm sm:text-base"
                                     placeholder="Tell us about your motivation to participate..."
                                 />
                             </div>
@@ -385,35 +385,35 @@ const EventRegistrationForm = ({ event, onClose, onRegistrationSuccess }) => {
 
                     {/* Registration Fee */}
                     {!event.registration?.fee?.isFree && (
-                        <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
-                            <h3 className="text-lg font-semibold text-orange-900 mb-2">Registration Fee</h3>
+                        <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 sm:p-4">
+                            <h3 className="text-base sm:text-lg font-semibold text-orange-900 mb-2">Registration Fee</h3>
                             <p className="text-orange-800">
-                                <span className="text-2xl font-bold">₹{event.registration.fee.amount}</span>
+                                <span className="text-xl sm:text-2xl font-bold">₹{event.registration.fee.amount}</span>
                                 {isTeamEvent && formData.teamSize > 1 && (
                                     <span className="text-sm ml-2">
                                         (Total: ₹{event.registration.fee.amount * formData.teamSize})
                                     </span>
                                 )}
                             </p>
-                            <p className="text-orange-700 text-sm mt-1">
+                            <p className="text-orange-700 text-xs sm:text-sm mt-1">
                                 Payment will be processed after registration confirmation.
                             </p>
                         </div>
                     )}
 
                     {/* Submit Button */}
-                    <div className="flex space-x-4">
+                    <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                            className="flex-1 px-4 py-2.5 sm:px-6 sm:py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors text-sm sm:text-base"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
                             disabled={loading}
-                            className="flex-1 px-6 py-3 bg-orange-600 text-white rounded-lg font-medium hover:bg-orange-700 disabled:opacity-50 transition-colors"
+                            className="flex-1 px-4 py-2.5 sm:px-6 sm:py-3 bg-orange-600 text-white rounded-lg font-medium hover:bg-orange-700 disabled:opacity-50 transition-colors text-sm sm:text-base"
                         >
                             {loading ? 'Registering...' : 'Register Now'}
                         </button>

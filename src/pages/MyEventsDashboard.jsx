@@ -154,22 +154,27 @@ const MyEventsDashboard = () => {
         if (!event) return null
 
         return (
-            <div className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
-                <div className="flex items-start justify-between mb-4">
-                    <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">{event.title}</h3>
-                        <div className="space-y-1 text-sm text-gray-600">
-                            <div className="flex items-center space-x-4">
-                                <span>📅 {formatDate(event.dateTime?.start)}</span>
-                                <span>📍 {event.location?.city || event.location?.venue || 'TBD'}</span>
+            <div className="border border-gray-200 rounded-lg p-2 sm:p-6 hover:shadow-md transition-shadow flex flex-col h-full bg-white">
+                <div className="flex items-start justify-between mb-2 sm:mb-4 flex-1">
+                    <div className="flex-1 min-w-0">
+                        <h3 className="text-xs sm:text-lg font-semibold text-gray-900 mb-1 leading-tight line-clamp-2">{event.title}</h3>
+                        <div className="space-y-0.5 text-[10px] sm:text-sm text-gray-600">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
+                                <span className="truncate">📅 {formatDate(event.dateTime?.start)}</span>
+                                <span className="truncate">📍 {event.location?.city || event.location?.venue || 'TBD'}</span>
                             </div>
-                            <div className="flex items-center space-x-4">
-                                <span>🏢 {event.organizer?.name}</span>
-                                <span>📝 Registered: {formatRegistrationDate(registration.registeredAt)}</span>
+                            <div className="flex items-center space-x-1 sm:space-x-4 truncate">
+                                <span className="truncate">🏢 {event.organizer?.name}</span>
+                                <span className="hidden sm:inline">📝 Registered: {formatRegistrationDate(registration.registeredAt)}</span>
+                            </div>
+                            <div className="sm:hidden mt-1">
+                                <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium capitalize ${getStatusColor(registration.status)}`}>
+                                    {registration.status}
+                                </span>
                             </div>
                         </div>
                     </div>
-                    <div className="text-right">
+                    <div className="text-right hidden sm:block">
                         <span className={`px-3 py-1 rounded-full text-sm font-medium capitalize ${getStatusColor(registration.status)}`}>
                             {registration.status}
                         </span>
@@ -181,16 +186,16 @@ const MyEventsDashboard = () => {
                     </div>
                 </div>
 
-                <div className="flex space-x-3">
+                <div className="flex flex-col gap-1.5 mt-2 sm:flex-row sm:space-x-3">
                     <button
                         onClick={() => handleViewDetails(event)}
-                        className="px-4 py-2 bg-orange-600 text-white rounded-lg text-sm font-medium hover:bg-orange-700"
+                        className="px-2 py-1 sm:px-4 sm:py-2 bg-orange-600 text-white rounded-lg text-[10px] sm:text-sm font-medium hover:bg-orange-700 text-center"
                     >
-                        View Event
+                        View
                     </button>
                     <button
                         onClick={() => handleUnregister(event._id, event.title)}
-                        className="px-4 py-2 border border-red-300 text-red-700 rounded-lg text-sm font-medium hover:bg-red-50"
+                        className="px-2 py-1 sm:px-4 sm:py-2 border border-red-300 text-red-700 rounded-lg text-[10px] sm:text-sm font-medium hover:bg-red-50 text-center"
                     >
                         Unregister
                     </button>
@@ -200,22 +205,22 @@ const MyEventsDashboard = () => {
     }
 
     const HostedEventCard = ({ event }) => (
-        <div className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
-            <div className="flex items-start justify-between mb-4">
-                <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{event.title}</h3>
-                    <div className="space-y-1 text-sm text-gray-600">
-                        <div className="flex items-center space-x-4">
-                            <span>📅 {formatDate(event.dateTime?.start)}</span>
-                            <span>📍 {event.location?.city || event.location?.venue || 'TBD'}</span>
+        <div className="border border-gray-200 rounded-lg p-2 sm:p-6 hover:shadow-md transition-shadow flex flex-col h-full bg-white">
+            <div className="flex items-start justify-between mb-2 sm:mb-4 flex-1">
+                <div className="flex-1 min-w-0">
+                    <h3 className="text-xs sm:text-lg font-semibold text-gray-900 mb-1 leading-tight line-clamp-2">{event.title}</h3>
+                    <div className="space-y-0.5 text-[10px] sm:text-sm text-gray-600">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
+                            <span className="truncate">📅 {formatDate(event.dateTime?.start)}</span>
+                            <span className="truncate">📍 {event.location?.city || event.location?.venue || 'TBD'}</span>
                         </div>
-                        <div className="flex items-center space-x-4">
-                            <span>👥 {event.registration?.currentParticipants || 0} participants</span>
-                            <span>👁️ {event.views || 0} views</span>
+                        <div className="flex items-center space-x-2 sm:space-x-4">
+                            <span>👥 {event.registration?.currentParticipants || 0}</span>
+                            <span>👁️ {event.views || 0}</span>
                         </div>
                     </div>
                 </div>
-                <div className="text-right">
+                <div className="text-right hidden sm:block">
                     <span className={`px-3 py-1 rounded-full text-sm font-medium capitalize ${event.status === 'published' ? 'bg-green-100 text-green-700' :
                         event.status === 'draft' ? 'bg-yellow-100 text-yellow-700' :
                             'bg-gray-100 text-gray-700'
@@ -230,39 +235,39 @@ const MyEventsDashboard = () => {
                 </div>
             </div>
 
-            <div className="flex space-x-3">
+            <div className="grid grid-cols-2 gap-1 mt-2 sm:flex sm:space-x-3">
                 <button
                     onClick={() => {
                         setSelectedHostEvent(event)
                         setShowHostDashboard(true)
                     }}
-                    className="px-4 py-2 bg-orange-600 text-white rounded-lg text-sm font-medium hover:bg-orange-700"
+                    className="col-span-2 px-2 py-1 sm:px-4 sm:py-2 bg-orange-600 text-white rounded-lg text-[10px] sm:text-sm font-medium hover:bg-orange-700 text-center"
                 >
-                    Manage Event
+                    Manage
                 </button>
                 <button
                     onClick={() => handleEditEvent(event)}
-                    className="px-4 py-2 border border-blue-300 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-50"
+                    className="px-2 py-1 sm:px-4 sm:py-2 border border-blue-300 text-blue-700 rounded-lg text-[10px] sm:text-sm font-medium hover:bg-blue-50 text-center"
                 >
                     Edit
                 </button>
                 <button
                     onClick={() => handleViewDetails(event)}
-                    className="px-4 py-2 border border-orange-300 text-orange-700 rounded-lg text-sm font-medium hover:bg-orange-50"
+                    className="px-2 py-1 sm:px-4 sm:py-2 border border-orange-300 text-orange-700 rounded-lg text-[10px] sm:text-sm font-medium hover:bg-orange-50 text-center"
                 >
-                    View Details
+                    View
                 </button>
                 <button
                     onClick={() => handleViewAnalytics(event)}
-                    className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50"
+                    className="px-2 py-1 sm:px-4 sm:py-2 border border-gray-300 text-gray-700 rounded-lg text-[10px] sm:text-sm font-medium hover:bg-gray-50 text-center"
                 >
-                    Analytics
+                    Stats
                 </button>
                 <button
                     onClick={() => handleDeleteEvent(event._id, event.title)}
-                    className="px-4 py-2 border border-red-300 text-red-700 rounded-lg text-sm font-medium hover:bg-red-50"
+                    className="px-2 py-1 sm:px-4 sm:py-2 border border-red-300 text-red-700 rounded-lg text-[10px] sm:text-sm font-medium hover:bg-red-50 text-center"
                 >
-                    Delete
+                    Del
                 </button>
             </div>
         </div>
@@ -295,14 +300,14 @@ const MyEventsDashboard = () => {
 
     return (
         <div className="space-y-6">
-            <div className="bg-white rounded-lg p-6 border border-orange-200">
-                <h1 className="text-3xl font-bold text-orange-900 mb-2">My Events Dashboard</h1>
-                <p className="text-gray-700">Manage your registered and hosted events</p>
+            <div className="bg-white rounded-lg p-3 sm:p-6 border border-orange-200">
+                <h1 className="text-xl sm:text-3xl font-bold text-orange-900 mb-1 sm:mb-2 text-center sm:text-left">My Events</h1>
+                <p className="text-gray-700 text-xs sm:text-base text-center sm:text-left">Manage your events</p>
             </div>
 
             <div className="bg-white rounded-lg border border-orange-200">
                 <div className="border-b border-orange-200">
-                    <nav className="flex space-x-8 px-6">
+                    <nav className="flex space-x-4 sm:space-x-8 px-3 sm:px-6 overflow-x-auto">
                         {[
                             { id: 'registered', label: 'Registered Events', count: registeredEvents.length },
                             { id: 'hosted', label: 'Hosted Events', count: hostedEvents.length }
@@ -324,9 +329,9 @@ const MyEventsDashboard = () => {
                     </nav>
                 </div>
 
-                <div className="p-6">
+                <div className="p-3 sm:p-6">
                     {activeTab === 'registered' && (
-                        <div className="space-y-4">
+                        <div className="grid grid-cols-2 lg:grid-cols-1 gap-2 sm:space-y-4 sm:gap-0">
                             {registeredEvents.length > 0 ? (
                                 registeredEvents.map((registration) => (
                                     <RegisteredEventCard key={registration._id} registration={registration} />
@@ -334,8 +339,8 @@ const MyEventsDashboard = () => {
                             ) : (
                                 <div className="text-center py-12">
                                     <div className="text-6xl mb-4">📅</div>
-                                    <h3 className="text-xl font-semibold text-gray-900 mb-2">No registered events</h3>
-                                    <p className="text-gray-600 mb-4">You haven't registered for any events yet</p>
+                                    <h3 className="text-base sm:text-xl font-semibold text-gray-900 mb-2">No registered events</h3>
+                                    <p className="text-gray-600 mb-4 text-xs sm:text-base">You haven't registered for any events yet</p>
                                     <button
                                         onClick={() => window.location.href = '#events'}
                                         className="bg-orange-600 text-white px-6 py-2 rounded-lg hover:bg-orange-700"
@@ -348,7 +353,7 @@ const MyEventsDashboard = () => {
                     )}
 
                     {activeTab === 'hosted' && (
-                        <div className="space-y-4">
+                        <div className="grid grid-cols-2 lg:grid-cols-1 gap-2 sm:space-y-4 sm:gap-0">
                             {hostedEvents.length > 0 ? (
                                 hostedEvents.map((event) => (
                                     <HostedEventCard key={event._id} event={event} />
@@ -356,8 +361,8 @@ const MyEventsDashboard = () => {
                             ) : (
                                 <div className="text-center py-12">
                                     <div className="text-6xl mb-4">🎯</div>
-                                    <h3 className="text-xl font-semibold text-gray-900 mb-2">No hosted events</h3>
-                                    <p className="text-gray-600 mb-4">You haven't hosted any events yet</p>
+                                    <h3 className="text-base sm:text-xl font-semibold text-gray-900 mb-2">No hosted events</h3>
+                                    <p className="text-gray-600 mb-4 text-xs sm:text-base">You haven't hosted any events yet</p>
                                     <button className="bg-orange-600 text-white px-6 py-2 rounded-lg hover:bg-orange-700">
                                         Create Event
                                     </button>

@@ -78,7 +78,7 @@ export const AuthProvider = ({ children }) => {
             return {
                 success: false,
                 error: errorResponse.message || error.message || 'Registration failed. Please try again.',
-                validationErrors: errorResponse.errors || []
+                errors: errorResponse.errors || []
             }
         }
     }
