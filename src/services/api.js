@@ -288,6 +288,31 @@ class ApiService {
     async getMyNotes() {
         return this.get('/notes/my/uploaded');
     }
+
+    // Payment APIs
+    async createPaymentOrder(eventId, registrationData) {
+        return this.post('/payments/create-order', { eventId, registrationData });
+    }
+
+    async verifyPayment(paymentData) {
+        return this.post('/payments/verify', paymentData);
+    }
+
+    async getPaymentHistory(page = 1, limit = 20) {
+        return this.get('/payments/user/history', { page, limit });
+    }
+
+    async getPaymentDetails(paymentId) {
+        return this.get(`/payments/${paymentId}`);
+    }
+
+    async requestRefund(paymentId, reason, amount = null) {
+        return this.post(`/payments/${paymentId}/refund`, { reason, amount });
+    }
+
+    async getEventPaymentAnalytics(eventId) {
+        return this.get(`/events/${eventId}/payment-analytics`);
+    }
 }
 
 export default new ApiService();

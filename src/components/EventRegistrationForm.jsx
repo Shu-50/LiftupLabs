@@ -1,12 +1,16 @@
-import { useState } from 'react'
+import { useState, lazy, Suspense } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useNotification } from '../context/NotificationContext'
 import apiService from '../services/api'
+
+// Lazy load payment component
+const RazorpayPayment = lazy(() => import('./RazorpayPayment'));
 
 const EventRegistrationForm = ({ event, onClose, onRegistrationSuccess }) => {
     const { user } = useAuth()
     const { showSuccess, showError } = useNotification()
     const [loading, setLoading] = useState(false)
+    const [showPayment, setShowPayment] = useState(false)
 
     const [formData, setFormData] = useState({
         // Contact Information
@@ -126,33 +130,54 @@ const EventRegistrationForm = ({ event, onClose, onRegistrationSuccess }) => {
             return
         }
 
-        setLoading(true)
-        try {
-            const registrationData = {
-                ...formData,
-                // Set team leader as first member if team registration
-                teamMembers: formData.teamSize > 1 ? [
-                    {
-                        name: user.name,
-                        email: user.email,
-                        phone: formData.phone,
-                        role: 'Team Leader',
-                        institution: formData.institution
-                    },
-                    ...formData.teamMembers.slice(1)
-                ] : []
-            }
+        // Check if event requires payment
+        const feeAmount = event.registration?.fee?.amount || 0
+        const isFreeEvent = feeAmount === 0 || event.registration?.fee?.isFree
 
-            await apiService.registerForEvent(event._id, registrationData)
-            showSuccess('Successfully registered for the event!')
-            onRegistrationSuccess?.()
-            onClose()
-        } catch (error) {
-            console.error('Registration error:', error)
-            showError(error.message || 'Failed to register for event')
-        } finally {
-            setLoading(false)
+        if (isFreeEvent) {
+            // Free event - register directly
+            setLoading(true)
+            try {
+                const registrationData = {
+                    ...formData,
+                    teamMembers: formData.teamSize > 1 ? [
+                        {
+                            name: user.name,
+                            email: user.email,
+                            phone: formData.phone,
+                            role: 'Team Leader',
+                            institution: formData.institution
+                        },
+                        ...formData.teamMembers.slice(1)
+                    ] : []
+                }
+
+                await apiService.registerForEvent(event._id, registrationData)
+                showSuccess('Successfully registered for the event!')
+                onRegistrationSuccess?.()
+                onClose()
+            } catch (error) {
+                console.error('Registration error:', error)
+                showError(error.message || 'Failed to register for event')
+            } finally {
+                setLoading(false)
+            }
+        } else {
+            // Paid event - show payment modal
+            setShowPayment(true)
         }
+    }
+
+    const handlePaymentSuccess = () => {
+        showSuccess('Payment successful! You are now registered for the event.')
+        setShowPayment(false)
+        onRegistrationSuccess?.()
+        onClose()
+    }
+
+    const handlePaymentFailure = (error) => {
+        console.error('Payment failed:', error)
+        setShowPayment(false)
     }
 
     const isTeamEvent = (event.registration?.teamSize?.max || 1) > 1
@@ -394,6 +419,37 @@ const EventRegistrationForm = ({ event, onClose, onRegistrationSuccess }) => {
                         </button>
                     </div>
                 </form>
+
+                {/* Payment Modal */}
+                {showPayment && (
+                    <Suspense fallback={
+                        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+                            <div className="bg-white rounded-lg p-8">
+                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto"></div>
+                            </div>
+                        </div>
+                    }>
+                        <RazorpayPayment
+                            event={event}
+                            registrationData={{
+                                ...formData,
+                                teamMembers: formData.teamSize > 1 ? [
+                                    {
+                                        name: user.name,
+                                        email: user.email,
+                                        phone: formData.phone,
+                                        role: 'Team Leader',
+                                        institution: formData.institution
+                                    },
+                                    ...formData.teamMembers.slice(1)
+                                ] : []
+                            }}
+                            onSuccess={handlePaymentSuccess}
+                            onFailure={handlePaymentFailure}
+                            onClose={() => setShowPayment(false)}
+                        />
+                    </Suspense>
+                )}
             </div>
         </div>
     )
