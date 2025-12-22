@@ -67,8 +67,8 @@ const RegisterPage = ({ onRegister }) => {
 
     return (
         <div className="min-h-screen bg-orange-50 flex">
-            {/* Left Sidebar */}
-            <div className="w-64 bg-orange-100 border-r border-orange-200 flex flex-col">
+            {/* Left Sidebar - Hidden on mobile */}
+            <div className="hidden lg:flex w-64 bg-orange-100 border-r border-orange-200 flex-col">
                 {/* Logo */}
                 <div className="p-4 border-b border-orange-200">
                     <div className="flex items-center space-x-2">
@@ -131,34 +131,43 @@ const RegisterPage = ({ onRegister }) => {
             {/* Main Content */}
             <div className="flex-1 flex flex-col">
                 {/* Header */}
-                <header className="bg-white border-b border-orange-200 px-6 py-4">
+                <header className="bg-white border-b border-orange-200 px-4 sm:px-6 py-3 sm:py-4">
                     <div className="flex items-center justify-between">
-                        <span className="text-orange-700 font-medium">Welcome</span>
-                        <div className="flex items-center space-x-4">
-                            <span className="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm font-medium">
+                        {/* Logo on mobile, Welcome text on desktop */}
+                        <div className="flex items-center space-x-2">
+                            <div className="lg:hidden w-7 h-7 bg-orange-600 rounded-lg flex items-center justify-center">
+                                <span className="text-white font-bold text-xs">L</span>
+                            </div>
+                            <span className="text-orange-700 font-medium text-sm sm:text-base">
+                                <span className="lg:inline">Welcome</span>
+                                <span className="lg:hidden">Liftuplabs</span>
+                            </span>
+                        </div>
+                        <div className="flex items-center space-x-2 sm:space-x-4">
+                            <span className="bg-orange-100 text-orange-700 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
                                 BETA
                             </span>
-                            <div className="w-8 h-8 bg-orange-600 rounded-full flex items-center justify-center">
-                                <span className="text-white text-sm">👤</span>
+                            <div className="w-7 h-7 sm:w-8 sm:h-8 bg-orange-600 rounded-full flex items-center justify-center">
+                                <span className="text-white text-xs sm:text-sm">👤</span>
                             </div>
                         </div>
                     </div>
                 </header>
 
                 {/* Register Content */}
-                <main className="flex-1 p-6 flex items-center justify-center">
+                <main className="flex-1 p-3 sm:p-6 flex items-center justify-center">
                     <div className="max-w-2xl w-full">
-                        <div className="bg-white rounded-lg p-8 border border-orange-200">
+                        <div className="bg-white rounded-lg p-4 sm:p-8 border border-orange-200">
                             {registrationSuccess ? (
                                 <div className="text-center">
-                                    <div className="text-green-500 text-6xl mb-4">📧</div>
-                                    <h1 className="text-3xl font-bold text-orange-900 mb-4">Check Your Email!</h1>
-                                    <p className="text-gray-700 mb-6">
+                                    <div className="text-green-500 text-4xl sm:text-6xl mb-4">📧</div>
+                                    <h1 className="text-2xl sm:text-3xl font-bold text-orange-900 mb-4">Check Your Email!</h1>
+                                    <p className="text-sm sm:text-base text-gray-700 mb-6">
                                         We've sent a verification email to <strong>{userEmail}</strong>
                                     </p>
                                     <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-6">
                                         <h3 className="font-semibold text-orange-900 mb-2">Next Steps:</h3>
-                                        <ol className="text-left text-orange-800 space-y-1">
+                                        <ol className="text-left text-sm sm:text-base text-orange-800 space-y-1">
                                             <li>1. Check your email inbox (and spam folder)</li>
                                             <li>2. Click the verification link in the email</li>
                                             <li>3. Complete your account setup</li>
@@ -191,14 +200,14 @@ const RegisterPage = ({ onRegister }) => {
                                 </div>
                             ) : (
                                 <>
-                                    <div className="flex items-center justify-between mb-6">
-                                        <h1 className="text-3xl font-bold text-orange-900">Create Account</h1>
-                                        <div className="flex items-center space-x-4">
-                                            <button className="flex items-center space-x-2 px-4 py-2 border border-orange-300 rounded-lg text-orange-700 hover:bg-orange-50">
+                                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-3">
+                                        <h1 className="text-2xl sm:text-3xl font-bold text-orange-900">Create Account</h1>
+                                        <div className="flex items-center space-x-2 sm:space-x-4">
+                                            <button className="flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2 border border-orange-300 rounded-lg text-orange-700 hover:bg-orange-50 text-xs sm:text-sm">
                                                 <span>🔒</span>
                                                 <span>Privacy</span>
                                             </button>
-                                            <button className="flex items-center space-x-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700">
+                                            <button className="flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 text-xs sm:text-sm">
                                                 <span>❓</span>
                                                 <span>Need Help</span>
                                             </button>
@@ -207,9 +216,9 @@ const RegisterPage = ({ onRegister }) => {
 
 
 
-                                    <p className="text-gray-700 mb-8">Join Liftuplabs to access events, resources, and your learning hub</p>
+                                    <p className="text-sm sm:text-base text-gray-700 mb-6 sm:mb-8">Join Liftuplabs to access events, resources, and your learning hub</p>
 
-                                    <form onSubmit={handleSubmit} className="space-y-6">
+                                    <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
                                             <input
@@ -261,7 +270,7 @@ const RegisterPage = ({ onRegister }) => {
 
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-3">Role</label>
-                                            <div className="flex space-x-4">
+                                            <div className="flex flex-wrap gap-3 sm:gap-4">
                                                 {['Student', 'Professional', 'Institution'].map((role) => (
                                                     <label key={role} className="flex items-center space-x-2">
                                                         <input

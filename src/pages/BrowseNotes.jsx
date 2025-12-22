@@ -236,8 +236,10 @@ const BrowseNotes = () => {
             )}
 
             {/* Notes Grid */}
-            {!loading && notes.length > 0 && (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-4 md:gap-6">
+            {/* {!loading && notes.length > 0 && (
+                
+
+                <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 lg:gap-6">
                     {notes.map((note) => (
                         <div key={note._id} className="bg-white rounded-lg border border-orange-200 overflow-hidden hover:shadow-lg transition-shadow flex flex-col">
                             <div className="bg-gradient-to-r from-orange-100 to-orange-50 h-20 sm:h-28 md:h-32 flex items-center justify-center shrink-0">
@@ -290,7 +292,7 @@ const BrowseNotes = () => {
                                             <button
                                                 onClick={() => handlePreview(note.fileUrl)}
                                                 className="flex-1 border border-orange-300 text-orange-700 px-2 py-1 rounded-md font-medium text-[10px] hover:bg-orange-50 transition-colors"
-                                            >
+                                                >
                                                 Preview
                                             </button>
                                             {user && (
@@ -304,18 +306,18 @@ const BrowseNotes = () => {
                                         </div>
                                     </div>
 
-                                    {/* Tablet/Desktop Buttons */}
+                                    //Tablet/Desktop Buttons 
                                     <div className="hidden sm:flex items-center space-x-2">
                                         <button
                                             onClick={() => handleDownload(note._id, note.fileUrl, note.fileName)}
                                             className="flex-1 bg-orange-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg font-medium hover:bg-orange-700 transition-colors text-xs sm:text-sm"
-                                        >
+                                            >
                                             📥 Download
                                         </button>
                                         <button
                                             onClick={() => handlePreview(note.fileUrl)}
                                             className="px-3 py-1.5 sm:px-4 sm:py-2 border border-orange-300 text-orange-700 rounded-lg font-medium hover:bg-orange-50 transition-colors text-xs sm:text-sm"
-                                        >
+                                            >
                                             👁️ Preview
                                         </button>
                                         {user && (
@@ -331,8 +333,90 @@ const BrowseNotes = () => {
                             </div>
                         </div>
                     ))}
-                </div>
-            )}
+                    </div> 
+                    */}
+                {/* Notes Grid */}
+{!loading && notes.length > 0 && (
+  <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
+    {notes.map((note) => (
+      <div
+        key={note._id}
+        className="bg-white rounded-md border border-orange-200 overflow-hidden flex flex-col"
+      >
+        {/* File Icon */}
+        <div className="bg-orange-50 h-16 flex items-center justify-center">
+          <span className="text-xl">📄</span>
+        </div>
+
+        {/* Content */}
+        <div className="p-2 flex flex-col flex-1">
+          {/* Title + Type */}
+          <div className="flex justify-between items-start gap-1 mb-1">
+            <h3 className="text-xs font-semibold text-gray-900 line-clamp-2 leading-snug">
+              {note.title}
+            </h3>
+            <span className="text-[9px] bg-orange-100 text-orange-700 px-1 rounded shrink-0">
+              {note.type}
+            </span>
+          </div>
+
+          {/* Author */}
+          <p className="text-[10px] text-gray-500 truncate mb-1">
+            by {note.author?.name || "Anonymous"}
+          </p>
+
+          {/* Subject + Size */}
+          <div className="text-[10px] text-gray-600 flex justify-between mb-2">
+            <span className="truncate">
+              <b>Sub:</b> {note.subject}
+            </span>
+            <span>
+              <b>Size:</b> {formatFileSize(note.fileSize)}
+            </span>
+          </div>
+
+          {/* Rating + Downloads */}
+          <div className="flex justify-between text-[10px] text-gray-600 mb-2">
+            <span>⭐ {note.rating.toFixed(1)}</span>
+            <span>📥 {note.downloads}</span>
+          </div>
+
+          {/* Buttons */}
+          <div className="mt-auto flex flex-col gap-1">
+            <button
+              onClick={() =>
+                handleDownload(note._id, note.fileUrl, note.fileName)
+              }
+              className="bg-orange-600 text-white text-[10px] py-1 rounded hover:bg-orange-700"
+            >
+              Download
+            </button>
+
+            <div className="flex gap-1">
+              <button
+                onClick={() => handlePreview(note.fileUrl)}
+                className="flex-1 border border-orange-300 text-orange-700 text-[10px] py-1 rounded hover:bg-orange-50"
+              >
+                Preview
+              </button>
+
+              {user && (
+                <button
+                  onClick={() => handleSave(note._id, note.isSaved)}
+                  className="border border-orange-300 text-orange-700 text-[10px] px-2 rounded hover:bg-orange-50"
+                >
+                  {note.isSaved ? "❤️" : "🤍"}
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+)}
+
+            
 
             {/* Empty State */}
             {!loading && notes.length === 0 && (
