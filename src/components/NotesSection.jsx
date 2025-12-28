@@ -128,7 +128,7 @@ const NotesSection = () => {
                 </div>
                 <div className="flex items-center space-x-1">
                     <span>⭐</span>
-                    <span>{note.rating.toFixed(1)}/5</span>
+                    <span>{Number(note.rating || 0).toFixed(1)}/5</span>
                 </div>
                 {note.pages > 0 && (
                     <div className="flex items-center space-x-1">
