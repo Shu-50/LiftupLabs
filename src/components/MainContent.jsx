@@ -1,6 +1,6 @@
 import EventsSection from './EventsSection'
 import NotesSection from './NotesSection'
-import CareerHub from '../pages/CareerHub'
+import CounsellingRouter from './Counselling/CounsellingRouter'
 import CoursesSection from './CoursesSection'
 import CommunitySection from './CommunitySection'
 import MyEventsDashboard from '../pages/MyEventsDashboard'
@@ -88,8 +88,8 @@ const MainContent = ({ activeSection }) => {
                 return <CoursesSection />
             case 'community':
                 return <CommunitySection />
-            case 'career':
-                return <CareerHub />
+            case 'counselling':
+                return <CounsellingRouter />
             case 'admin':
                 return <AdminDashboard />
             case 'about':

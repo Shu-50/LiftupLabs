@@ -14,7 +14,7 @@ const Sidebar = ({ activeSection, setActiveSection, isMobileMenuOpen, setIsMobil
         { id: 'courses', label: 'Courses & Lectures', icon: '📚' },
         { id: 'institutions', label: 'Institutions & Hosts', icon: '🏛️' },
         { id: 'community', label: 'Community', icon: '👥' },
-        { id: 'career', label: 'Career & Guidance', icon: '💼' },
+        { id: 'counselling', label: 'Counselling & Health Care', icon: '🧠' },
         { id: 'about', label: 'About / Contact', icon: '📞' }
     ]
 
@@ -102,7 +102,7 @@ const Sidebar = ({ activeSection, setActiveSection, isMobileMenuOpen, setIsMobil
                                     handleMenuItemClick('community')
                                     break
                                 case 'job':
-                                    handleMenuItemClick('career')
+                                    handleMenuItemClick('counselling')
                                     break
                                 default:
                                     handleMenuItemClick('home')
