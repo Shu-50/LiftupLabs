@@ -271,7 +271,7 @@ const RegisterPage = ({ onRegister }) => {
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-3">Role</label>
                                             <div className="flex flex-wrap gap-3 sm:gap-4">
-                                                {['Student', 'Professional', 'Institution'].map((role) => (
+                                                {['Student', 'Professional', 'Institution', 'Counsellor'].map((role) => (
                                                     <label key={role} className="flex items-center space-x-2">
                                                         <input
                                                             type="radio"

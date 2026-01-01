@@ -1,5 +1,6 @@
 import { Button } from "../components/ui/button";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import {
   ArrowRight,
   Star,
@@ -114,7 +115,16 @@ export default function Index({ onNavigate }: { onNavigate?: (page: string) => v
                   Find a Counsellor
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
-                <Button variant="hero" size="xl" className="w-full sm:w-auto">
+                <Button variant="hero" size="xl" className="w-full sm:w-auto" onClick={() => {
+                  const userStr = localStorage.getItem('liftuplabs_user');
+                  const user = userStr ? JSON.parse(userStr) : null;
+
+                  if (!user || user.role !== 'counsellor') {
+                    toast.error("Your profile is not registered as a Counsellor. Please create a new account with Counsellor user type.");
+                    return;
+                  }
+                  onNavigate?.('become-counsellor');
+                }}>
                   Become a Counsellor
                 </Button>
               </div>

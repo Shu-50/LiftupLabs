@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { BookingWizard } from "../components/booking/BookingWizard";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
+import { DashboardButton } from "../components/DashboardButton";
 import { toast } from "sonner";
 import {
   Star,
@@ -87,18 +89,26 @@ export default function CounsellorProfile({
       description: "Your session with Dr. Sarah Mitchell is scheduled.",
     });
   };
-  
+
   return (
     <div className="min-h-screen bg-background">
 
-  {/* Back Button */}
-  <button
-    onClick={() => onNavigate?.('counsellors')}
-    className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-orange-600 mt-2 mb-2 cursor-pointer transition-colors"
-  >
-    <ChevronLeft className="w-4 h-4" />
-    Back to Counsellors
-  </button>
+      {/* Header with Back and Dashboard buttons */}
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between pt-2 mb-2">
+          {/* Back Button */}
+          <button
+            onClick={() => onNavigate?.('counsellors')}
+            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-orange-600 cursor-pointer transition-colors"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            Back to Counsellors
+          </button>
+
+          {/* Dashboard Button */}
+          <DashboardButton onNavigate={onNavigate} />
+        </div>
+      </div>
       {/* Cover Image */}
       <div className="relative h-48 md:h-64 mt-6">
         <img
@@ -138,7 +148,7 @@ export default function CounsellorProfile({
                   <h1 className="text-2xl md:text-3xl font-bold  text-foreground">{counsellorData.name}</h1>
                   {counsellorData.isTopRated && (
                     <Badge className="bg-accent text-accent-foreground ">
-                      <Star className="w-3 h-3 mr-1 fill-current "  />
+                      <Star className="w-3 h-3 mr-1 fill-current " />
                       Top Rated
                     </Badge>
                   )}

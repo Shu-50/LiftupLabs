@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
 import {
@@ -10,79 +10,81 @@ import {
   Settings,
   LogOut,
   ChevronRight,
+  ChevronLeft,
   Search,
   Heart,
   BookOpen,
 } from "lucide-react";
+import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
-// Mock data
-const upcomingSessions = [
-  {
-    id: 1,
-    counsellorName: "Dr. Sarah Mitchell",
-    counsellorImage: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop",
-    date: "Today",
-    time: "2:00 PM",
-    duration: 60,
-    type: "Career Coaching",
-    status: "upcoming",
-  },
-  {
-    id: 2,
-    counsellorName: "Dr. James Chen",
-    counsellorImage: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=100&h=100&fit=crop",
-    date: "Tomorrow",
-    time: "10:00 AM",
-    duration: 30,
-    type: "Mental Health",
-    status: "scheduled",
-  },
-];
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-const pastSessions = [
-  {
-    id: 3,
-    counsellorName: "Emily Rodriguez",
-    counsellorImage: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop",
-    date: "Dec 10, 2024",
-    type: "Study Abroad",
-    rating: 5,
-    reviewed: true,
-  },
-  {
-    id: 4,
-    counsellorName: "Michael Park",
-    counsellorImage: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop",
-    date: "Dec 5, 2024",
-    type: "Startup Guidance",
-    rating: null,
-    reviewed: false,
-  },
-];
-
-const savedCounsellors = [
-  {
-    id: "1",
-    name: "Dr. Sarah Mitchell",
-    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop",
-    title: "Career Coach",
-    rating: 4.9,
-    nextAvailable: "Today",
-  },
-  {
-    id: "2",
-    name: "Dr. Priya Sharma",
-    image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=100&h=100&fit=crop",
-    title: "Clinical Psychologist",
-    rating: 4.9,
-    nextAvailable: "Tomorrow",
-  },
-];
-
-export default function UserDashboard() {
+export default function UserDashboard({ onNavigate }: { onNavigate?: (page: string) => void }) {
   const [activeTab, setActiveTab] = useState("overview");
+  const [loading, setLoading] = useState(true);
+  const [dashboardData, setDashboardData] = useState<any>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [userName, setUserName] = useState("User");
+
+  useEffect(() => {
+    fetchUserId();
+  }, []);
+
+  useEffect(() => {
+    if (userId) {
+      fetchDashboardData();
+    }
+  }, [userId]);
+
+  const fetchUserId = () => {
+    try {
+      const userStr = localStorage.getItem('liftuplabs_user');
+      if (!userStr) {
+        toast.error('Please login to view dashboard');
+        return;
+      }
+
+      const user = JSON.parse(userStr);
+      setUserId(user.id);
+      setUserName(user.name || 'User');
+    } catch (error) {
+      console.error('Error fetching user ID:', error);
+      toast.error('Failed to load user profile');
+    }
+  };
+
+  const fetchDashboardData = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${API_URL}/users/dashboard/${userId}/overview`);
+      const data = await response.json();
+
+      setDashboardData(data);
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+      toast.error('Failed to load dashboard data');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    if (date.toDateString() === today.toDateString()) return 'Today';
+    if (date.toDateString() === tomorrow.toDateString()) return 'Tomorrow';
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  };
+
+  const formatTime = (timeStr: string) => {
+    const time = new Date(`2000-01-01T${timeStr}`);
+    return time.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+  };
 
   const sidebarLinks = [
     { id: "overview", label: "Overview", icon: BookOpen },
@@ -95,16 +97,25 @@ export default function UserDashboard() {
   return (
     <div className="min-h-screen bg-background">
 
-      <div className="flex pt-16">
+      <div className="flex ">
         {/* Sidebar */}
-        <aside className="hidden lg:block w-64 fixed left-0 top-16 bottom-0 bg-card border-r border-border p-4">
+        <aside className="hidden lg:block w-56 fixed lg:left-64 top-21 bottom-0 bg-card border-r border-border p-4 z-40">
+          {/* Back Button */}
+          <button
+            onClick={() => onNavigate?.('index')}
+            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-orange-600 mb-4 cursor-pointer transition-colors"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            Back to Counselling
+          </button>
+
           <div className="flex items-center gap-3 mb-8 p-3">
             <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center text-primary-foreground font-bold text-lg">
-              JD
+              {userName.charAt(0).toUpperCase()}
             </div>
             <div>
-              <p className="font-semibold text-foreground">John Doe</p>
-              <p className="text-xs text-muted-foreground">Premium Member</p>
+              <p className="font-semibold text-foreground">{userName}</p>
+              <p className="text-xs text-muted-foreground">Student</p>
             </div>
           </div>
 
@@ -114,8 +125,8 @@ export default function UserDashboard() {
                 key={link.id}
                 onClick={() => setActiveTab(link.id)}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${activeTab === link.id
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                   }`}
               >
                 <link.icon className="w-5 h-5" />
@@ -133,7 +144,7 @@ export default function UserDashboard() {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 lg:ml-64 p-6">
+        <main className="flex-1 lg:ml-[15rem] px-6">
           {/* Header */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
             <div>
@@ -161,30 +172,30 @@ export default function UserDashboard() {
               </Link>
             </div>
 
-            {upcomingSessions.length > 0 ? (
+            {dashboardData?.upcomingSessions?.length > 0 ? (
               <div className="grid md:grid-cols-2 gap-4">
-                {upcomingSessions.map((session) => (
+                {dashboardData.upcomingSessions.map((session: any) => (
                   <div
                     key={session.id}
                     className="p-5 rounded-xl bg-card border border-border shadow-soft hover:shadow-card transition-shadow"
                   >
                     <div className="flex items-start gap-4">
                       <img
-                        src={session.counsellorImage}
-                        alt={session.counsellorName}
-                        className="w-14 h-14 rounded-xl object-cover"
+                        src={session.counsellor_image || "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop"}
+                        alt={session.counsellor_name}
+                        className="w-12 h-12 rounded-xl object-cover"
                       />
                       <div className="flex-1">
-                        <h3 className="font-semibold text-foreground">{session.counsellorName}</h3>
-                        <p className="text-sm text-muted-foreground mb-2">{session.type}</p>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <p className="font-semibold text-foreground">{session.counsellor_name}</p>
+                        <p className="text-sm text-muted-foreground">{session.session_type}</p>
+                        <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
                           <span className="flex items-center gap-1">
-                            <Calendar className="w-4 h-4" />
-                            {session.date}
+                            <Calendar className="w-3 h-3" />
+                            {formatDate(session.scheduled_date)}
                           </span>
                           <span className="flex items-center gap-1">
-                            <Clock className="w-4 h-4" />
-                            {session.time}
+                            <Clock className="w-3 h-3" />
+                            {formatTime(session.scheduled_time)}
                           </span>
                           <Badge variant="secondary">{session.duration} min</Badge>
                         </div>
@@ -235,32 +246,41 @@ export default function UserDashboard() {
               </div>
 
               <div className="space-y-4">
-                {pastSessions.map((session) => (
-                  <div
-                    key={session.id}
-                    className="flex items-center gap-4 p-3 rounded-xl bg-secondary/30"
-                  >
-                    <img
-                      src={session.counsellorImage}
-                      alt={session.counsellorName}
-                      className="w-12 h-12 rounded-xl object-cover"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-foreground truncate">{session.counsellorName}</p>
-                      <p className="text-sm text-muted-foreground">{session.type} • {session.date}</p>
-                    </div>
-                    {session.reviewed ? (
-                      <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4 fill-accent text-accent" />
-                        <span className="text-sm font-medium">{session.rating}</span>
+                {dashboardData?.pastSessions?.length > 0 ? (
+                  dashboardData.pastSessions.map((session: any) => (
+                    <div
+                      key={session.id}
+                      className="flex items-center gap-4 p-3 rounded-xl bg-secondary/30"
+                    >
+                      <img
+                        src={session.counsellor_image || "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop"}
+                        alt={session.counsellor_name}
+                        className="w-12 h-12 rounded-xl object-cover"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-foreground">{session.counsellor_name}</p>
+                        <p className="text-sm text-muted-foreground">{session.session_type}</p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {formatDate(session.scheduled_date)}
+                        </p>
                       </div>
-                    ) : (
-                      <Button size="sm" variant="soft">
-                        Leave Review
-                      </Button>
-                    )}
+                      {session.reviewed ? (
+                        <div className="flex items-center gap-1">
+                          <Star className="w-4 h-4 fill-accent text-accent" />
+                          <span className="text-sm font-medium">{session.rating}</span>
+                        </div>
+                      ) : (
+                        <Button size="sm" variant="soft">
+                          Leave Review
+                        </Button>
+                      )}
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    No past sessions
                   </div>
-                ))}
+                )}
               </div>
             </motion.div>
 
@@ -277,31 +297,37 @@ export default function UserDashboard() {
               </div>
 
               <div className="space-y-4">
-                {savedCounsellors.map((counsellor) => (
-                  <div
-                    key={counsellor.id}
-                    className="flex items-center gap-4 p-3 rounded-xl bg-secondary/30"
-                  >
-                    <img
-                      src={counsellor.image}
-                      alt={counsellor.name}
-                      className="w-12 h-12 rounded-xl object-cover"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-foreground truncate">{counsellor.name}</p>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <span>{counsellor.title}</span>
-                        <span className="flex items-center gap-1">
-                          <Star className="w-3 h-3 fill-accent text-accent" />
-                          {counsellor.rating}
-                        </span>
+                {dashboardData?.savedCounsellors?.length > 0 ? (
+                  dashboardData.savedCounsellors.map((counsellor: any) => (
+                    <div
+                      key={counsellor.id}
+                      className="flex items-center gap-4 p-3 rounded-xl bg-secondary/30"
+                    >
+                      <img
+                        src={counsellor.image}
+                        alt={counsellor.name}
+                        className="w-12 h-12 rounded-xl object-cover"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-foreground truncate">{counsellor.name}</p>
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <span>{counsellor.title}</span>
+                          <span className="flex items-center gap-1">
+                            <Star className="w-3 h-3 fill-accent text-accent" />
+                            {counsellor.rating}
+                          </span>
+                        </div>
                       </div>
+                      <Link to={`/counsellor/${counsellor.id}`}>
+                        <Button size="sm">Book</Button>
+                      </Link>
                     </div>
-                    <Link to={`/counsellor/${counsellor.id}`}>
-                      <Button size="sm">Book</Button>
-                    </Link>
+                  ))
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    No saved counsellors
                   </div>
-                ))}
+                )}
               </div>
             </motion.div>
           </div>

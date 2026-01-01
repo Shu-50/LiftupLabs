@@ -14,6 +14,7 @@ import {
 import { Slider } from "../components/ui/slider";
 import { Search, SlidersHorizontal, Star, ChevronLeft, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { DashboardButton } from "../components/DashboardButton";
 
 // Mock data
 const counsellors = [
@@ -130,7 +131,7 @@ export default function CounsellorsPage({ onNavigate }: { onNavigate?: (page: st
     <div className="min-h-screen bg-background">
 
       {/* Header */}
-      <section className="pt-4 pb-6 bg-secondary/30">
+      <section className="pt-2 pb-1 bg-secondary/30">
         <div className="container mx-auto px-4">
 
           <motion.div
@@ -151,14 +152,20 @@ export default function CounsellorsPage({ onNavigate }: { onNavigate?: (page: st
       {/* Search & Filters */}
       <section className="py-4 border-b border-border sticky top-0 bg-background/95 backdrop-blur-lg z-40">
         <div className="container mx-auto px-4">
-          {/* Back Button */}
-          <button
-            onClick={() => onNavigate?.('index')}
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-orange-600 mb-4 cursor-pointer transition-colors"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            Back to Counselling
-          </button>
+          {/* Header with Back and Dashboard buttons */}
+          <div className="flex items-center justify-between mb-4">
+            {/* Back Button */}
+            <button
+              onClick={() => onNavigate?.('index')}
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-orange-600 cursor-pointer transition-colors"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              Back to Counselling
+            </button>
+
+            {/* Dashboard Button */}
+            <DashboardButton onNavigate={onNavigate} />
+          </div>
 
           <div className="flex flex-col md:flex-row gap-4">
             {/* Search */}
