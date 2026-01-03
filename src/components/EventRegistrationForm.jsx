@@ -389,11 +389,9 @@ const EventRegistrationForm = ({ event, onClose, onRegistrationSuccess }) => {
                             <h3 className="text-base sm:text-lg font-semibold text-orange-900 mb-2">Registration Fee</h3>
                             <p className="text-orange-800">
                                 <span className="text-xl sm:text-2xl font-bold">₹{event.registration.fee.amount}</span>
-                                {isTeamEvent && formData.teamSize > 1 && (
-                                    <span className="text-sm ml-2">
-                                        (Total: ₹{event.registration.fee.amount * formData.teamSize})
-                                    </span>
-                                )}
+                                <span className="text-sm ml-2">
+                                    (Fixed fee per registration)
+                                </span>
                             </p>
                             <p className="text-orange-700 text-xs sm:text-sm mt-1">
                                 Payment will be processed after registration confirmation.

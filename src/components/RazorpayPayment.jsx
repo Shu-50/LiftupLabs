@@ -16,12 +16,10 @@ const RazorpayPayment = memo(({
     const [showQR, setShowQR] = useState(false);
     const [razorpayLoaded, setRazorpayLoaded] = useState(false);
 
-    // Memoize total amount calculation
+    // Fixed amount per registration (not multiplied by team size)
     const totalAmount = useMemo(() => {
-        const feeAmount = event.registration?.fee?.amount || 0;
-        const teamSize = registrationData.teamSize || 1;
-        return feeAmount * teamSize;
-    }, [event.registration?.fee?.amount, registrationData.teamSize]);
+        return event.registration?.fee?.amount || 0;
+    }, [event.registration?.fee?.amount]);
 
     // Load Razorpay script dynamically
     useEffect(() => {
@@ -84,10 +82,9 @@ const RazorpayPayment = memo(({
         setLoading(true);
         try {
             const verifyResponse = await apiService.verifyPayment({
-                razorpayOrderId: response.razorpay_order_id,
-                razorpayPaymentId: response.razorpay_payment_id,
-                razorpaySignature: response.razorpay_signature,
-                paymentId: paymentData.paymentId
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature
             });
 
             showSuccess('Payment successful! Registration confirmed.');
@@ -99,7 +96,7 @@ const RazorpayPayment = memo(({
         } finally {
             setLoading(false);
         }
-    }, [paymentData, showSuccess, showError, onSuccess, onFailure]);
+    }, [showSuccess, showError, onSuccess, onFailure]);
 
     // Open Razorpay checkout
     const openRazorpayCheckout = useCallback(() => {
@@ -109,11 +106,11 @@ const RazorpayPayment = memo(({
         }
 
         const options = {
-            key: paymentData.razorpayKeyId,
-            amount: paymentData.amount * 100, // Convert to paise
+            key: paymentData.key, // Backend returns 'key', not 'razorpayKeyId'
+            amount: paymentData.amount, // Already in paise from backend, don't multiply again
             currency: paymentData.currency,
             name: 'LiftupLabs',
-            description: `Registration for ${paymentData.eventTitle}`,
+            description: `Registration for ${event.title}`,
             order_id: paymentData.orderId,
             handler: handlePaymentSuccess,
             prefill: {
@@ -199,13 +196,11 @@ const RazorpayPayment = memo(({
                     <div className="bg-green-50 border border-green-200 rounded-lg p-3 sm:p-4">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-xs sm:text-sm text-green-700">Total Amount</p>
+                                <p className="text-xs sm:text-sm text-green-700">Registration Fee</p>
                                 <p className="text-2xl sm:text-3xl font-bold text-green-900">₹{totalAmount}</p>
-                                {registrationData.teamSize > 1 && (
-                                    <p className="text-xs text-green-600 mt-1">
-                                        ₹{event.registration?.fee?.amount} × {registrationData.teamSize} members
-                                    </p>
-                                )}
+                                <p className="text-xs text-green-600 mt-1">
+                                    Fixed fee per registration
+                                </p>
                             </div>
                             <div className="text-3xl sm:text-4xl">💳</div>
                         </div>
